@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="操作系统发展史 直到20世纪50年代中期，还没出现操作系统，计算机工作采用手工操作方式，手工操作方式有两个特点:用户独占全机，不会出现因资源已被其他用户占用而等待的现象，但资源的利用率低；CPU等待手工操作，CPU的利用不充分。">
+<meta name="keywords" content="多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程编程(一)">
+<meta property="og:url" content="http://yoursite.com/2017/05/26/多线程编程-一/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="操作系统发展史 直到20世纪50年代中期，还没出现操作系统，计算机工作采用手工操作方式，手工操作方式有两个特点:用户独占全机，不会出现因资源已被其他用户占用而等待的现象，但资源的利用率低；CPU等待手工操作，CPU的利用不充分。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-06-01T03:39:07.207Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多线程编程(一)">
+<meta name="twitter:description" content="操作系统发展史 直到20世纪50年代中期，还没出现操作系统，计算机工作采用手工操作方式，手工操作方式有两个特点:用户独占全机，不会出现因资源已被其他用户占用而等待的现象，但资源的利用率低；CPU等待手工操作，CPU的利用不充分。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/05/26/多线程编程-一/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>多线程编程(一) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/26/多线程编程-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">多线程编程(一)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-05-26 16:14:42" itemprop="dateCreated datePublished" datetime="2017-05-26T16:14:42+08:00">2017-05-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-06-01 11:39:07" itemprop="dateModified" datetime="2017-06-01T11:39:07+08:00">2017-06-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="操作系统发展史"><a href="#操作系统发展史" class="headerlink" title="操作系统发展史"></a>操作系统发展史</h3><ul>
+<li>直到20世纪50年代中期，还没出现操作系统，计算机工作采用手工操作方式，手工操作方式有两个特点:用户独占全机，不会出现因资源已被其他用户占用而等待的现象，但资源的利用率低；CPU等待手工操作，CPU的利用不充分。<a id="more"></a></li>
+<li>50年代后期出现了批处理系统，批处理系统的追求目标是提高系统资源利用率和系统吞吐量，以及作业流程的自动化。批处理系统的一个重要缺点是不提供人机交互能力，给用户使用计算机带来不便<br>批处理是指用户将一批作业提交给操作系统后就不再干预，由操作系统控制他们自动运行，这种采用批量处理作业技术的操作系统称为批处理操作系统。批处理操作系统分为单道批处理系统和多道批处理系统。<ul>
+<li>早期的批处理系统属于单道批处理系统，其目的是减少作业间转换时的人工操作，从而减少CPU的等待时间。它的特征是内存中只允许存放一个作业，即当前正在运行的作业才能驻留内存，作业的执行顺序是先进先出。</li>
+<li>为了提高CPU的利用率，在单道批处理系统的基础上引入了多道程序设计技术，这就形成了多道批处理系统，即在内存中可同时存在若干道作业，作业执行的次序与进入内存的次序无严格的对应关系，因为这些作业是通过一定的作业调度算法来使用CPU的，一个作业在等待I/O处理时，CPU调度另外一个作业运行，因此CPU的利用率得到显著提高。</li>
+<li>批处理系统中，一个作业可以长时间占用CPU。而分时系统中，一个作业只能在一个时间片的时间内使用CPU。批处理系统不是严格意义上的操作系统。</li>
+</ul>
+</li>
+<li>多道程序技术运行的特征(60年代中期)：多道、宏观上并行、微观上串行。多道程序技术的提出是为了改善CPU的利用率。它需要硬件支持，并令CPU调度其他硬件工作。</li>
+<li>分时操作系统是使一台计算机采用时间片轮转的方式同时为几个、几十个甚至几百个用户服务的一种操作系统。把计算机与许多终端用户连接起来，分时操作系统将系统处理机时间与内存空间按一定的时间间隔，轮流地切换给各终端用户的程序使用。由于时间间隔很短，每个用户的感觉就像他独占计算机一样。分时操作系统的特点是可有效增加资源的利用率。<br>实现多任务处理的方式有抢占式和协作式。协作式环境下，下一个进程被调度的前提是当前进程主动放弃时间片；抢占式环境下，操作系统完全决定进程调度方案，操作系统可以剥夺耗时长的进程的时间片，提供给其他进程。</li>
+</ul>
+<h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><ol>
+<li>每个程序最终都会加载到内存中运行。多道程序设计的出现提供了进程的雏形–系统内部可以存放多于一个作业。分时操作系统中，系统内部也可以同时存在超过一个程序，这些同时存在于计算机内存中的程序就被称为进程。</li>
+<li>进程的实现：通过操作系统的内存分配和调度。OS通过进程控制块管理进程。通过虚拟内存实现进程隔离，一个进程无法访问其他进程正在占有的资源。但不安全的操作系统例如DOS，任何进程都可以访问其他进程的资源。</li>
+<li>虚拟内存是计算机系统内存管理的一种技术，它使得应用程序认为它拥有连续的可用的内存，而实际上，它通常是被分割成多个物理内存碎片，还有部分暂时存储在外部磁盘存储器上，在需要时进行数据交换，目前，大部分操作系统都使用了虚拟内存，如Windows家族的”虚拟内存”；Linux的”交换空间”等。</li>
+<li>在多进程的环境里，虽然从概念上看，有多个进程在同时执行，但在单个CPU下，在任何时刻只能有一个进程处于执行状态，而其他进程则处于非执行状态。通过进程调度来确定任意时刻到底由哪个进程执行，哪些不执行，其任务即选择下一个要运行的进程。</li>
+<li>进程间通信，指至少两个进程或线程间传送数据或信号的一些技术或方法。每个进程都有自己的一部分独立的系统资源，彼此是隔离的。为了能使不同进程互相访问资源并进行协调工作，才有了进程间通信。进程间通信的途径有很多种：管道，套接字，信号与信号量，共享内存，消息队列等。</li>
+</ol>
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><ul>
+<li>微软决定在一个进程中运行应用程序的每个实例。进程是应用程序要使用的资源的一个集合。当程序在进程中开始运行时，它就如同被关进了一个密闭的空间，里面有所有它需要的东西。不同的密闭空间不会发生关系，任何一个进程死掉不会导致整个系统崩溃。进程有自己的虚拟地址空间，确保这个进程使用的代码不会被其他进程访问。并且当进程失去响应时，系统仍然可以工作，还可以用其他进程杀死失去响应的进程。</li>
+<li>如果机器只有一个CPU，那么当某个应用程序进入无穷循环，那个唯一的CPU就会忙着跑无穷循环而无暇顾及其他应用程序。为了解决CPU无法分身的问题，线程便应运而生。</li>
+<li>Windows通过线程来虚拟化CPU，线程使得每个进程(至少拥有一个线程)拥有CPU的一个”分身”(称为逻辑CPU，真正的CPU称为物理CPU)。当一个线程进入无限循环时，其他线程仍然可以继续运行。</li>
+</ul>
+<h3 id="线程与进程区别"><a href="#线程与进程区别" class="headerlink" title="线程与进程区别"></a>线程与进程区别</h3><ol>
+<li>线程的任务是虚拟化CPU，令CPU不再是所有进程共享的一个互斥元件，进程的任务则是提高CPU的使用效率。</li>
+<li>线程作为调度和分派的基本单位，而进程作为资源拥有的基本单位。</li>
+<li>一个进程可以包括多个线程，而且至少要有一个前台线程。</li>
+<li>进程之间通过虚拟内存隔离，但一个进程中的线程共享所有进程的资源。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/23/捆绑包/" rel="next" title="捆绑包">
+                <i class="fa fa-chevron-left"></i> 捆绑包
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/27/Net常见错误/" rel="prev" title=".Net常见错误">
+                .Net常见错误 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统发展史"><span class="nav-number">1.</span> <span class="nav-text">操作系统发展史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程"><span class="nav-number">2.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程"><span class="nav-number">3.</span> <span class="nav-text">线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程与进程区别"><span class="nav-number">4.</span> <span class="nav-text">线程与进程区别</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

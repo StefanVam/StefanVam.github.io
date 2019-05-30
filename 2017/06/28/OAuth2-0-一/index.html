@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="OAuth是一个关于授权的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版。 名词定义 Third-party application：第三方应用程序(客户端) Http service：HTTP服务提供商">
+<meta name="keywords" content="认证授权">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OAuth2.0(一)">
+<meta property="og:url" content="http://yoursite.com/2017/06/28/OAuth2-0-一/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="OAuth是一个关于授权的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版。 名词定义 Third-party application：第三方应用程序(客户端) Http service：HTTP服务提供商">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-06-28T07:49:35.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OAuth2.0(一)">
+<meta name="twitter:description" content="OAuth是一个关于授权的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版。 名词定义 Third-party application：第三方应用程序(客户端) Http service：HTTP服务提供商">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/06/28/OAuth2-0-一/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>OAuth2.0(一) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/28/OAuth2-0-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OAuth2.0(一)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-06-28 10:19:49 / Geändert am: 15:49:35" itemprop="dateCreated datePublished" datetime="2017-06-28T10:19:49+08:00">2017-06-28</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>OAuth是一个关于授权的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版。</p>
+<h3 id="名词定义"><a href="#名词定义" class="headerlink" title="名词定义"></a>名词定义</h3><ul>
+<li>Third-party application：第三方应用程序(客户端)</li>
+<li>Http service：HTTP服务提供商<a id="more"></a></li>
+<li>Resource Owner：资源所有者(用户)</li>
+<li>User Agent：用户代理(浏览器)</li>
+<li>Authorization server：认证服务器，即服务提供商专门用来处理认证的服务器</li>
+<li>Resource server：资源服务器，即服务提供商存放用户生成的资源的服务器。它与认证服务器，可以是同一台服务器，也可以是不同服务器<br>从上述名词，可以得出OAuth的作用就是让”客户端”安全可控地获取”用户”的授权，与”服务提供商”进行互动。</li>
+</ul>
+<h3 id="OAuth思路"><a href="#OAuth思路" class="headerlink" title="OAuth思路"></a>OAuth思路</h3><p>OAuth在”客户端”与”服务提供商”之间，设置了一个授权层。”客户端”不能直接登录”服务提供商”，只能登录授权层，以此将用户与客户端区分开来。”客户端”登录授权层所用的令牌，与用户的密码不同。用户可以在登录的时候，指定授权层令牌的权限范围和有效期。<br>“客户端”登录授权层以后，”服务提供商”根据令牌的权限范围和有效期，向”客户端”开发用户存储的资料。</p>
+<h3 id="运行流程"><a href="#运行流程" class="headerlink" title="运行流程"></a>运行流程</h3><ol>
+<li>用户打开客户端后，客户端要求用户给予授权。</li>
+<li>用户同意给予客户端授权。(关键操作)</li>
+<li>客户端使用上一步获得的授权，向认证服务器申请令牌。</li>
+<li>认证服务器对客户端进行认证后，确认无误，同意发放令牌。</li>
+<li>客户端使用令牌，向资源服务器申请获取资源。</li>
+<li>资源服务器确认令牌无误，同意向客户端开放资源。</li>
+</ol>
+<h3 id="客户端授权模式"><a href="#客户端授权模式" class="headerlink" title="客户端授权模式"></a>客户端授权模式</h3><p>客户端必须得到用户的授权，才能获得令牌。OAuth 2.0定义了四种授权方式。</p>
+<ul>
+<li>授权码模式(authorization code)</li>
+<li>简化模式(implicit)</li>
+<li>密码模式(resource owner password credentials)</li>
+<li>客户端模式(client credentials)</li>
+</ul>
+<h3 id="授权码模式"><a href="#授权码模式" class="headerlink" title="授权码模式"></a>授权码模式</h3><p>授权码模式是功能最完整、流程最严密的授权模式。它的特点是通过客户端的后台服务器，与”服务提供商”的认证服务器进行互动。步骤如下：</p>
+<ol>
+<li><p>用户访问客户端，后者将其导向认证服务器。客户端申请认证的URI，包含以下参数：</p>
+<ul>
+<li>response_type：表示授权类型，必选项，此处的值固定为”code”</li>
+<li>client_id：表示客户端的ID，必选项</li>
+<li>redirect_uri：表示重定向URI(URI编码下)，可选项</li>
+<li>scope：表示申请的权限范围，可选项</li>
+<li>state：表示客户端的当前状态，可以指定任意值，认证服务器会原封不动地返回这个值<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /authorize?response_type=code&amp;client_id=s6BhdRkqt3&amp;state=xyz</span><br><span class="line">    &amp;redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>用户选择是否给予客户端授权。</p>
+</li>
+<li><p>假设用户给予授权，认证服务器将用户导向客户端事先指定的”重定向URI”(redirection URI)，同时附上一个授权码，服务器回应客户端的URI，包含以下参数：</p>
+<ul>
+<li>code：授权码，必选项。该码的有效期应该很短，通常设为10分钟，客户端只能使用该码一次，否则会被授权服务器拒绝。该码与客户端ID和重定向URI是一一对应的。</li>
+<li>state：如果客户端的请求中包含这个参数，认证服务器的回应也必须一模一样包含这个参数。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Location: https://client.example.com/cb?code=SplxlOBeZQQYbYS6WxSbIA</span><br><span class="line">      &amp;state=xyz</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>客户端收到授权码，附上早先的”重定向URI”，向认证服务器申请令牌，这一步是在客户端的后台服务器上完成的，对用户不可见，客户端向认证服务器申请令牌的HTTP请求(注意请求方式)，包含以下参数：</p>
+<ul>
+<li>grant_type：表示使用的授权模式，必选项，此处的值固定为”authorization_code”。</li>
+<li>code：表示上一步获得的授权码，必选项。</li>
+<li>redirect_uri：表示重定向URI，必选项，且必须与第一步中的该参数值保持一致。</li>
+<li>client_id：表示客户端ID，必选项。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">    grant_type=authorization_code&amp;code=SplxlOBeZQQYbYS6WxSbIA</span><br><span class="line">&amp;redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>认证服务器核对了授权码和重定向URI，确认无误后，向客户端发送访问令牌(access token)和更新令牌(refresh toke)，认证服务器发送的HTTP回复(注意Content-Type)，包含以下参数：</p>
+<ul>
+<li>access_token：表示访问令牌，必选项。</li>
+<li>token_type：表示令牌类型，该值大小写不敏感，必选项，可以是bearer类型或mac类型。</li>
+<li>expires_in：表示过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。</li>
+<li>refresh_token：表示更新令牌，用来获取下一次的访问令牌，可选项。</li>
+<li>scope：表示权限方位，如果与客户端申请的范围一致，此项可省略。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   &quot;access_token&quot;:&quot;2YotnFZFEjr1zCsicMWpAA&quot;,</span><br><span class="line">   &quot;token_type&quot;:&quot;example&quot;,</span><br><span class="line">   &quot;expires_in&quot;:3600,</span><br><span class="line">   &quot;refresh_token&quot;:&quot;tGzv3JOkF0XG5Qx2TlKWIA&quot;,</span><br><span class="line">   &quot;example_parameter&quot;:&quot;example_value&quot;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/认证授权/" rel="tag"># 认证授权</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/14/多线程编程-三/" rel="next" title="多线程编程(三)">
+                <i class="fa fa-chevron-left"></i> 多线程编程(三)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/05/替换Cursor方案/" rel="prev" title="替换Cursor方案">
+                替换Cursor方案 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#名词定义"><span class="nav-number">1.</span> <span class="nav-text">名词定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OAuth思路"><span class="nav-number">2.</span> <span class="nav-text">OAuth思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行流程"><span class="nav-number">3.</span> <span class="nav-text">运行流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端授权模式"><span class="nav-number">4.</span> <span class="nav-text">客户端授权模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#授权码模式"><span class="nav-number">5.</span> <span class="nav-text">授权码模式</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

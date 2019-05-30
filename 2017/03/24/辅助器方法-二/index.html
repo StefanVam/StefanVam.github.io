@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="内建Form辅助器方法 和ActionLink方法一样，BeginForm方法中的action属性值也是由MVC框架去判断进行路由选择。可以使用BeginRouteForm方法来指定使用特定的路由。">
+<meta name="keywords" content="MVC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="辅助器方法(二)">
+<meta property="og:url" content="http://yoursite.com/2017/03/24/辅助器方法-二/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="内建Form辅助器方法 和ActionLink方法一样，BeginForm方法中的action属性值也是由MVC框架去判断进行路由选择。可以使用BeginRouteForm方法来指定使用特定的路由。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-10-30T02:57:45.223Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="辅助器方法(二)">
+<meta name="twitter:description" content="内建Form辅助器方法 和ActionLink方法一样，BeginForm方法中的action属性值也是由MVC框架去判断进行路由选择。可以使用BeginRouteForm方法来指定使用特定的路由。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/03/24/辅助器方法-二/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>辅助器方法(二) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/24/辅助器方法-二/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">辅助器方法(二)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-03-24 16:17:14" itemprop="dateCreated datePublished" datetime="2017-03-24T16:17:14+08:00">2017-03-24</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-10-30 10:57:45" itemprop="dateModified" datetime="2017-10-30T10:57:45+08:00">2017-10-30</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="内建Form辅助器方法"><a href="#内建Form辅助器方法" class="headerlink" title="内建Form辅助器方法"></a>内建Form辅助器方法</h3><ol start="4">
+<li>和ActionLink方法一样，BeginForm方法中的action属性值也是由MVC框架去判断进行路由选择。可以使用BeginRouteForm方法来指定使用特定的路由。</li>
+<li><a id="more"></a></li>
+<li>有一些基本的HTML辅助器方法用于创建input元素(P495)，其中要注意CheckBox辅助器渲染了两个input元素。它渲染了一个checkbox和随后的一个同名的隐藏域。这是因为浏览器在检查checkbox未作出选择时，不会递交checkbox的值。有了这个隐藏控件，可以确保MVC框架在作出选择后，从这个隐藏域中获取一个值。</li>
+<li>可以根据模型属性创建input元素，即在辅助器方法中只接收一个单一的字符串参数，该参数即属性名，MVC框架会尝试找出与这个属性名相关联的某个数据项。这将检查以下几个位置:ViewBag.DataValue和@Model.DataValue(P479)。</li>
+<li>每个基本的input辅助器，都有一个对应的强类型辅助器(P498)。这些辅助器只能用于强类型视图，它们以lambda表达式进行工作。传递给表达式的值是视图模型对象，以及可选的字段或属性，它们将被用于设置value标签属性。</li>
+<li>也有用来创建select元素的辅助器方法，这些可以用于从一个下拉列表选择一个单项，或表现一个允许多选的多项select元素。和其他表单元素一样，这些辅助器也有弱类型和强类型版本(P499)。</li>
+</ol>
+<h3 id="模板辅助器方法"><a href="#模板辅助器方法" class="headerlink" title="模板辅助器方法"></a>模板辅助器方法</h3><p>类似Html.CheckBoxFor和Html.TextBoxFor等辅助器，它们生成了特定类型的HTML元素，这意味着笔者必须进一步决定，该使用哪种类型的元素去表现模型属性，并且在属性的类型发生变化时，要手动更新视图。利用模板辅助器方法，我们可以指定想要显示的属性，而让MVC框架去判定应该使用什么样的HTML元素。</p>
+<ol>
+<li>Html.Editor和Html.EditorFor是用来生成编辑器或编辑器元素的。(编辑器是指对模型对象进行数据编辑的HTML元素或标记)。</li>
+<li>Html.Label和Html.LabelFor是用来生成标签的，默认情况下，将属性名作为标签的内容。</li>
+<li>Html.Display和Html.DisplayFor方法默认情况下并未生成HTML元素。它们只是生成了它们所操作的属性值。</li>
+<li>采用模型元数据为这些辅助器提供指导，告诉它们如何处理模型类型，可以使模板辅助器得到改善。元数据是用C#特性来表示的，通过特性及其参数值，给视图辅助器提供一系列指令。将元数据运用于模型类，辅助器方法在生成HTML元素时，会参考这些元数据。(512)<ul>
+<li>大多数模型类至少都有一个这样的属性，它们通常与底层存储机制有关——由关系数据库管理的主键就是这样的。可以使用HiddenInput特性让辅助器渲染一个隐藏的input字段。此时辅助器会将该属性渲染成一个只读标签，如果想完全隐藏一个属性，可以将特性中的DisplayValue属性的值设置为false。</li>
+<li>为了将一个属性从生成的HTML中排除掉，可以使用ScaffoldColumn特性。HiddenInput特性是将一个属性的值包含在一个隐藏的input元素中，而ScaffoldColumn特性允许开发人员针对支架过程将一个属性标记为完全禁止。(该特性对单属性辅助器无效)</li>
+<li>默认情况下，Label、LabelFor、LabelForModel，以及EditorForModel辅助器会以属性名作为它们生成的标签元素的内容。可以通过DisplayName特性和Display特性来指定标签元素的内容。</li>
+<li>也可以使用元数据来格式化模型属性的值。即DataType特性，DataType特性以DataType枚举中的一个值作为参数，注意：这些值的效果依赖于它们所关联的属性类型。如DataType.Date(P516)</li>
+<li>为了渲染一个属性的HTML，可以用UIHint特性来指定希望使用的模板。(P517)</li>
+</ul>
+</li>
+<li>模板辅助器方法只对简单类型(Primitive Type)进行操作，即那些能够用System.ComponentModel.TypeDescription类中的GetConverter方法通过一个字符串值进行解析的那些类型。因此，如果要渲染一个复合属性的HTML，必须通过单独调用模板辅助器方法，明确地处理复合属性。(P520)</li>
+</ol>
+<h3 id="定制模板视图辅助器系统"><a href="#定制模板视图辅助器系统" class="headerlink" title="定制模板视图辅助器系统"></a>定制模板视图辅助器系统</h3><p>我们可以创建自定义编辑器模板，也可以把内建的模板替换掉。(P521)</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MVC/" rel="tag"># MVC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/22/辅助器方法-一/" rel="next" title="辅助器方法(一)">
+                <i class="fa fa-chevron-left"></i> 辅助器方法(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/29/杂项-一/" rel="prev" title="杂项(一)">
+                杂项(一) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内建Form辅助器方法"><span class="nav-number">1.</span> <span class="nav-text">内建Form辅助器方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模板辅助器方法"><span class="nav-number">2.</span> <span class="nav-text">模板辅助器方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定制模板视图辅助器系统"><span class="nav-number">3.</span> <span class="nav-text">定制模板视图辅助器系统</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

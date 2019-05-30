@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="与执行计划相关的运算符有很多种，详情可以在此处中查看  聚集索引扫描(Clustered Index Scan):与表扫描类似，当贯穿整个索引或其中很大一部分时，为了获取所需要查询的数据，会逐行进行扫描。当一个索引存在但优化器认为扫描所有的数据比使用索引查询更快的话，也可能使用索引扫描。该运算符性能较差">
+<meta name="keywords" content="T-SQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL执行计划三">
+<meta property="og:url" content="http://yoursite.com/2018/09/03/SQL执行计划三/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="与执行计划相关的运算符有很多种，详情可以在此处中查看  聚集索引扫描(Clustered Index Scan):与表扫描类似，当贯穿整个索引或其中很大一部分时，为了获取所需要查询的数据，会逐行进行扫描。当一个索引存在但优化器认为扫描所有的数据比使用索引查询更快的话，也可能使用索引扫描。该运算符性能较差">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-12T06:01:49.108Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQL执行计划三">
+<meta name="twitter:description" content="与执行计划相关的运算符有很多种，详情可以在此处中查看  聚集索引扫描(Clustered Index Scan):与表扫描类似，当贯穿整个索引或其中很大一部分时，为了获取所需要查询的数据，会逐行进行扫描。当一个索引存在但优化器认为扫描所有的数据比使用索引查询更快的话，也可能使用索引扫描。该运算符性能较差">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2018/09/03/SQL执行计划三/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>SQL执行计划三 | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/03/SQL执行计划三/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQL执行计划三
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2018-09-03 13:44:38" itemprop="dateCreated datePublished" datetime="2018-09-03T13:44:38+08:00">2018-09-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2018-11-12 14:01:49" itemprop="dateModified" datetime="2018-11-12T14:01:49+08:00">2018-11-12</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>与执行计划相关的运算符有很多种，详情可以在<a href="http://msdn2.microsoft.com/en-us/library/ms175913.aspx" target="_blank" rel="noopener">此处</a>中查看</p>
+<ol>
+<li><p>聚集索引扫描(Clustered Index Scan):与表扫描类似，当贯穿整个索引或其中很大一部分时，为了获取所需要查询的数据，会逐行进行扫描。当一个索引存在但优化器认为扫描所有的数据比使用索引查询更快的话，也可能使用索引扫描。该运算符性能较差</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM Person.ContactType</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>聚集索引查找(Clustered Index Seek):与扫描不同，优化器会使用索引来获取所需要的数据。性能比扫描高</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM Person.ContactType WHERE ContactTypeID=5</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>非聚集索引查找(Non-clustered Index Seek):与聚集索引查找类似</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT EmailAddress FROM Person.EmailAddress WHERE EmailAddress LIKE &apos;works.com%&apos;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>键查找(Key LookUp):意味着优化器不能通过一个运算符直接返回需要的数据，必须用聚集索引来获取额外的数据。该运算符性能较差</p>
+</li>
+<li><p>嵌套循环(Nested Loops):一个标准的join操作，键查找存在时该运算符必然存在</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM Person.EmailAddress WHERE EmailAddress LIKE &apos;works.com%&apos;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>表扫描(Table Scan):通过逐行扫描表来返回数据。该运算符出现的原因可能是由于无用的索引或者没有过滤条件，也可能优化器认为该操作比使用索引更快。该运算符性能较差</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM dbo.DatabaseLog</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>RID查找(RID LookUp):与键查找类似，当一张表没有聚集索引时，可能会出现该运算符。该运算符性能较差</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM dbo.DatabaseLog WHERE DatabaseLogID=5</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>哈希匹配(Hash Match):这种连接有两种输入，即建立输入和探测输入。首先SQL Server会根据统计信息从两张表中筛选出较小的表作为建立输入，并且读入所有行，然后在内存中根据关联条件建立一个哈希表。在整个建立阶段完成后进入探测阶段。以后一行一行的对探测输入进行扫描和计算，并为每个探测行进行计算哈希值，然后进行匹配。当表没有排序或者没有索引时，可能会出现该运算符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM Person.BusinessEntityAddress a JOIN Person.Address b ON b.AddressID = a.AddressID</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>合并连接(Merge Join):合并连接要求两个输入都要在合并列上排序。由于每个输入都已排序，因此Merge Join运算符将从每个输入中获取一行进行比较，如果行相等则进行返回，不等则舍弃，如果两张表数据量不同，则会进行重复比较。当数据量不大的时候，这种连接方式比哈希匹配更加有效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM Person.BusinessEntityAddress a JOIN Person.Address b ON b.AddressID = a.AddressID ORDER BY b.AddressID</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>嵌套循环(Nested Loop):将一个联接输入用作外部输入表，将另一个联接输入用作内部输入表。外部逐行循环来处理外部输入表，内部逐行循环来处理内部输入表，内部循环会针对每个外部行执行，在内部输入表中搜索匹配的行。当外部输入较小且内部输入有索引在连接的字段上的时候，会出现该运算符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM HumanResources.Employee a JOIN Person.BusinessEntityAddress b ON b.BusinessEntityID = a.BusinessEntityID</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>计算标量(Compute Scalar):用于一个标量计算并返回计算值，一般出现在筛选谓词或联接谓词中</p>
+</li>
+<li><p>排序(Sort):当含有order by子句并且排序字段不是聚集索引时，可能会出现该操作符，该操作符会影响性能，尽量避免。</p>
+</li>
+<li><p>聚合(Aggregate):当含有group by子句时，会出现哈希匹配(聚合)，这是比较昂贵的操作，应该尽量少的出现或使用where子句先过滤一部分数据。</p>
+</li>
+<li><p>筛选器(Filter):当含有having子句时，会出现筛选器操作符，这是比较昂贵的操作，应该尽量少的出现或使用where子句先过滤一部分数据。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/T-SQL/" rel="tag"># T-SQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/16/Python常用操作/" rel="next" title="Python常用操作">
+                <i class="fa fa-chevron-left"></i> Python常用操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/07/用Python写爬虫-三/" rel="prev" title="用Python写爬虫(三)">
+                用Python写爬虫(三) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="实际情况下，用户通常输入一些不能验证和使用的数据。模型验证是，确保应用程序所接收的数据适合于绑定到模型，并且在不合适时给用户提供有用的信息，以帮助他们修正其问题的过程。">
+<meta name="keywords" content="MVC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模型验证(一)">
+<meta property="og:url" content="http://yoursite.com/2017/05/05/模型验证-一/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="实际情况下，用户通常输入一些不能验证和使用的数据。模型验证是，确保应用程序所接收的数据适合于绑定到模型，并且在不合适时给用户提供有用的信息，以帮助他们修正其问题的过程。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-05-09T08:52:40.193Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="模型验证(一)">
+<meta name="twitter:description" content="实际情况下，用户通常输入一些不能验证和使用的数据。模型验证是，确保应用程序所接收的数据适合于绑定到模型，并且在不合适时给用户提供有用的信息，以帮助他们修正其问题的过程。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/05/05/模型验证-一/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>模型验证(一) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/05/模型验证-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">模型验证(一)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-05-05 16:28:17" itemprop="dateCreated datePublished" datetime="2017-05-05T16:28:17+08:00">2017-05-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-05-09 16:52:40" itemprop="dateModified" datetime="2017-05-09T16:52:40+08:00">2017-05-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>实际情况下，用户通常输入一些不能验证和使用的数据。模型验证是，确保应用程序所接收的数据适合于绑定到模型，并且在不合适时给用户提供有用的信息，以帮助他们修正其问题的过程。</p>
+<a id="more"></a>
+<p>该过程的第一部分，检查接收到的数据是保持域模型完整性的方式之一。通过拒绝域环境中无意义的数据，可以防止应用程序中出现奇怪和意想不到的情况。第二部分，帮助用户修正问题，同样是重要的。如果不给用户提供一些与应用程序进行交互所需要的信息和反馈，他们会感到受挫和困惑。在面向公众的应用程序中(Internet应用程序)，这意味着用户会直接停用这个应用程序；在社团应用程序中(Intranet应用程序)，这意味着会妨碍用户的工作流程。</p>
+<h3 id="明确地验证模型"><a href="#明确地验证模型" class="headerlink" title="明确地验证模型"></a>明确地验证模型</h3><ol>
+<li><p>验证一个模型最直接的方式，是在行为方法中做这件事。通过检查模型绑定器赋给参数对象的各个属性的值，并且用ModelState属性注册所发现的错误，ModelState属性是控制器从它的基类继承而来的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if (string.IsNullOrEmpty(appt.ClientName)) &#123;</span><br><span class="line">    ModelState.AddModelError(&quot;ClientName&quot;, &quot;Please enter your name&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述例子是希望用户为此属性提供一个值，因此，用静态的string.IsNullOrEmpty方法对该属性进行了检查。如果未接收到一个值，则使用ModelState.AddModelError方法指定有问题的属性名，和一条应该显示给用户的消息，以帮助他们改正这一错误。</p>
+</li>
+<li><p>可以通过使用ModelState.IsValidField属性，来检查模型绑定器是否能够对一个属性赋值。以确保模型绑定器能够解析用户所递交的值。如果无法从请求数据中解析到一个值，执行额外检查或报告其他错误是没有意义的。</p>
+</li>
+<li><p>在验证了模型对象的所有属性之后，读取ModelState.IsValid属性，以考察是否有错误发生。如果在检查期间调用ModelState.AddModelError方法，或在创建对象时模型绑定器遇到了问题，该方法会返回true。</p>
+</li>
+<li><p>如果相关属性有错误报告，那么辅助器对应的input元素会添加一个CSS的class标签属性，其值为input-validation-error。可以通过该类来为验证失败的属性添加特定的样式。</p>
+</li>
+<li><p>样式只能指定一个字段有问题，但并没有告诉用户这个问题是什么。Html.ValidationSummary辅助器会给用户显示验证错误的摘要。如果没有错误，那么该辅助器不会生成任何HTML。该辅助器生成的HTML中包含validation-summary-errors类。(有关属性级错误和模型级错误详见P585)</p>
+</li>
+<li><p>希望把验证摘要限制到模型级错误的原因是，属性级错误可以显示在相应字段的旁边。通过Html.ValidationMessageFor辅助器为单个模型属性显示验证错误。</p>
+</li>
+</ol>
+<h3 id="其他验证技术"><a href="#其他验证技术" class="headerlink" title="其他验证技术"></a>其他验证技术</h3><ol>
+<li>默认模型绑定器会将验证作为绑定过程的一部分，模型绑定器会为模型对象中的每一个属性执行一些基本的验证。内建的默认模型绑定器DefaultModelBinder提供了一些可以重写的有用方法，以便对一个绑定器添加验证。(P589)</li>
+<li>MVC框架也支持用特性来表达模型验证规则。使用特性的优点是，在整个应用程序中运用绑定过程的任何地方，都会强制执行验证规则，而不止存在于个别行为方法中。所有验证特性都可以给ErrorMessage属性设置一个值，以指定一个自定义的错误消息。如果不提供自定义错误消息，那么将采用默认消息。(P590)</li>
+<li>内建的验证特性很基本，而且只能做属性级验证。在使用复选框辅助器方法时，要注意非空判断的验证，并非简单的使用Required特性，因为复选框无论是否选中，都会像后台传递一个值。(P591)</li>
+<li>通过派生ValidationAttribute类，可以创建自定义的属性验证特性或者创建模型验证特性。也可以通过内建的验证特性来派生新类，从而扩展内建验证特性行为的能力。(P591)</li>
+<li>另一种验证技术是创建自验证模型，即验证逻辑是模型类的一部分。一个自验证模型类实现了IValidatableObject接口。(P596)</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MVC/" rel="tag"># MVC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/05/Python程序设计-一/" rel="next" title="Python程序设计(一)">
+                <i class="fa fa-chevron-left"></i> Python程序设计(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/09/模型验证-二/" rel="prev" title="模型验证(二)">
+                模型验证(二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#明确地验证模型"><span class="nav-number">1.</span> <span class="nav-text">明确地验证模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他验证技术"><span class="nav-number">2.</span> <span class="nav-text">其他验证技术</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

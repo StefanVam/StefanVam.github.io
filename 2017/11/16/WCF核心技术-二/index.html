@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="现实世界中，契约代表着两方或多方之间一份有约束力的协议，它指定按照明确的价格提供货物或服务。在网络世界中，契约有类似的功能：它是两方或多方之间的协议，指定可以交换的消息，以及这些消息的期限和条件。">
+<meta name="keywords" content="WCF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WCF核心技术(二)">
+<meta property="og:url" content="http://yoursite.com/2017/11/16/WCF核心技术-二/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="现实世界中，契约代表着两方或多方之间一份有约束力的协议，它指定按照明确的价格提供货物或服务。在网络世界中，契约有类似的功能：它是两方或多方之间的协议，指定可以交换的消息，以及这些消息的期限和条件。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-29T02:14:29.404Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WCF核心技术(二)">
+<meta name="twitter:description" content="现实世界中，契约代表着两方或多方之间一份有约束力的协议，它指定按照明确的价格提供货物或服务。在网络世界中，契约有类似的功能：它是两方或多方之间的协议，指定可以交换的消息，以及这些消息的期限和条件。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/11/16/WCF核心技术-二/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>WCF核心技术(二) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/16/WCF核心技术-二/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">WCF核心技术(二)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-11-16 16:18:40" itemprop="dateCreated datePublished" datetime="2017-11-16T16:18:40+08:00">2017-11-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-12-29 10:14:29" itemprop="dateModified" datetime="2017-12-29T10:14:29+08:00">2017-12-29</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>现实世界中，契约代表着两方或多方之间一份有约束力的协议，它指定按照明确的价格提供货物或服务。在网络世界中，契约有类似的功能：它是两方或多方之间的协议，指定可以交换的消息，以及这些消息的期限和条件。</p>
+<a id="more"></a>
+<p>端点必须指定其实现的功能操作以及期望的数据格式。这些规格加在一起，就构成了契约。在WCF中，有以下三种形式的契约：</p>
+<ul>
+<li>服务契约：服务契约描述服务所实现的功能操作。服务契约将.NET类型中的类方法(class method)映射到WSDL中的服务、端口类型及操作，而服务契约中的操作契约则描述了服务操作，即实现服务功能的函数方法。</li>
+<li>数据契约：数据契约描述服务与客户端通信时使用的数据结构。数据契约将CLR数据类型映射到XML模式定义(XML Schema Definition,XSD)，并定义如何对其进行序列化和反序列化。数据契约描述了所有从服务操作发送或接收的数据。</li>
+<li>消息契约：消息契约将CLR数据类型映射成SOAP消息，描述SOAP消息的格式，并影响这些消息的WSDL和XSD定义。消息契约可以精确地控制SOAP信头和信体。<br>为了能够与尽量多的系统互通，通常使用Web服务描述语言(Web Service Description Language,WSDL)来表示契约,WSDL是一个基于XML的语言用于描述web service及其函数、参数和返回值。WSDL文档可分为两部分。顶部分由抽象定义组成，而底部分则由具体描述组成。<br>由于契约是在WSDL和XSD中定义的，而代码通常使用CLR类型，所以在系统中需要对两种类型进行映射。</li>
+</ul>
+<h3 id="服务契约"><a href="#服务契约" class="headerlink" title="服务契约"></a>服务契约</h3><ol>
+<li>服务契约描述了一个服务端点所实现的操作接口。服务契约引用消息格式，并描述如何对其进行交换。消息格式则由数据契约与消息契约进一步描述。</li>
+<li>WCF将消息契约用于设计阶段和运行时。在设计阶段，消息契约主要用于识别代码中需要发布为WSDL中端点的类。代码中被标记为[ServiceContract]的类，以及该类中被标记为[OperationContract]的方法，都将在WSDL中发布，以用于客户端访问。该类将被识别为wsdl:service，而方法则被识别为wsdl:operation；在运行时，WCF分发器收到一则消息，就会查看wsdl:operation的名称，以此判别要将反序列化后的消息发送给哪一个标记有[OperationContract]的类方法。</li>
+<li>由客户端发往服务端点的SOAP消息，其中有以下几点需要注意：<ul>
+<li>SOAP消息的默认命名空间是<a href="http://tempuri.org/" target="_blank" rel="noopener"> http://tempuri.org/</a>，可以在[ServiceContract]特性里将此默认定义覆盖。如果准备向外界发布服务，而不是仅在应用内部或小范围内使用的话，最好将默认命名空间覆盖。因为命名空间是用来唯一标识服务的构件，这样可以避免在多个服务结合使用时发生混淆。</li>
+<li>类中定义的方法名，在SOAP消息头部分中被用于构成wsa:Action元素。完整的action取值应该是契约命名空间、契约名(如果没有使用显示的服务接口，应为接口名或类名)、操作名组合而成的；如果消息是对应的相应接口，还要加上额外的字符串”Response”。</li>
+<li>SOAP消息体的内容，由方法的调用格式以及在[OperationContract]与[DataContract]属性中指定的限定前缀决定。</li>
+<li>SOAP消息头含有消息发送的目的地址。</li>
+</ul>
+</li>
+<li>良好的设计会尽量避免用户不得不等待任务完成才能启动下个任务的情形，这种多任务功能是通过一种异步设计模式来完成的。用SvcUtil工具生成代码时，在高级选项中打开/async选项，则在同步方法之外，还会为每个服务操作生成异步方法。</li>
+<li>要注意的是服务端并不知道客户端在使用异步编程；服务端契约仅仅指定了使用请求-响应通信，而客户端实现异步模式时并不需要服务器端的参与。</li>
+<li>单向消息交换模式，常用于客户端需要向服务发送消息却不需要回应的情况下。通过这种模式，客户端仅仅需要得到消息被成功发送的通知，而不需要服务真正返回一个响应消息。单向操作可以通过在[OperationContract]属性中设置IsOneWay=true修饰符来指定。当客户端调用服务中的一个单向方法时，控制权在服务操作结束之前就已经被返还给调用者。</li>
+<li>双向消息交换模式，按照建立客户端到服务的会话所使用的绑定方式，WCF会建立一或两条信道来实现双工消息模式。支持双向通信的协议，如命名管道与TCP，只需要一个信道。而无法支持双向通信的协议，如http，WCF则会建立额外的信道来进行服务端反向到客户端的通信。对于预定义的名称中含有”dual”字样的WCF绑定，已经实现了双信道。</li>
+<li>双工操作时，会存在一些可靠性方面的问题。例如，如果服务无法调用客户端的回调操作，则仅仅会在控制台上输出日志信息，但从不重试。服务是否应该重试呢？如果重试，应该多久重试一次，又何时停止？或者，当预先知道客户端在一个时间段内无法接收更新时，这些信息应该存储在哪里以便稍后发送？要解决这一系列重要问题，可以使用消息中间件，如BizTalk。</li>
+<li>使用svcutil.exe或”添加服务引用”功能，可以生成客户端代理。代理定义的接口名称，是由服务名后附加”Callback”组成的。如果服务契约中的接口是IStockService，则客户端接口就是IStockServiceCallback。客户端必须实现一个由此接口派生的类。(P43)</li>
+<li>端点与契约之间是多对一的关系，一个端点只可以具有一个契约，但一个契约可以被多个端点引用。然而，尽管端点只能指定一个契约，接口聚合功能却使得单一契约可以发布多个接口。此外，如果多个端点使用不同的契约，但使用了相同的绑定，则可以位于同一地址，这也造成了单个端点可以实现多个契约的假象。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WCF/" rel="tag"># WCF</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/13/WCF核心技术-一/" rel="next" title="WCF核心技术(一)">
+                <i class="fa fa-chevron-left"></i> WCF核心技术(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/26/Linux基本命令-一/" rel="prev" title="Linux基本命令(一)">
+                Linux基本命令(一) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务契约"><span class="nav-number">1.</span> <span class="nav-text">服务契约</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

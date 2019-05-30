@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在Python 3.x里，urllib2改名为urllib。urllib是Python的标准库，包含了从网络请求数据，处理cookie，甚至改变请求头和用户代理这些元数据的函数，该包含有的模块:">
+<meta name="keywords" content="爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用Python写爬虫(一)">
+<meta property="og:url" content="http://yoursite.com/2018/07/20/用Python写爬虫-一/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="在Python 3.x里，urllib2改名为urllib。urllib是Python的标准库，包含了从网络请求数据，处理cookie，甚至改变请求头和用户代理这些元数据的函数，该包含有的模块:">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-10T10:43:12.597Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用Python写爬虫(一)">
+<meta name="twitter:description" content="在Python 3.x里，urllib2改名为urllib。urllib是Python的标准库，包含了从网络请求数据，处理cookie，甚至改变请求头和用户代理这些元数据的函数，该包含有的模块:">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2018/07/20/用Python写爬虫-一/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>用Python写爬虫(一) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/用Python写爬虫-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">用Python写爬虫(一)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2018-07-20 10:43:40" itemprop="dateCreated datePublished" datetime="2018-07-20T10:43:40+08:00">2018-07-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2018-09-10 18:43:12" itemprop="dateModified" datetime="2018-09-10T18:43:12+08:00">2018-09-10</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ol>
+<li><p>在Python 3.x里，urllib2改名为urllib。urllib是Python的标准库，包含了从网络请求数据，处理cookie，甚至改变请求头和用户代理这些元数据的函数，该包含有的模块:</p>
+<a id="more"></a>
+<ul>
+<li>urllib.request 请求并读取URLs</li>
+<li>urllib.error 包含由urllib.request产生的一些异常对象</li>
+<li>urllib.parse 解析URL</li>
+<li>urllib.robotparser 解析robots.txt文件</li>
+</ul>
+</li>
+<li><p>url.request模块下有个urlopen函数，用来打开并读取一个从网络获取的远程对象。(它可以轻松地读取HTML文件、图像文件，或其他任何文件流)，该函数返回http.client模块下的一个HTTPResponse对象，该对象的Read函数可以读取并返回最多N个字节。</p>
+</li>
+<li><p>在解析HTML页面之前，可以先思考与页面相关的以下问题：</p>
+<ul>
+<li>寻找”打印此页”的链接，或者看看网站有没有HTML样式更友好的移动版。</li>
+<li>寻找隐藏在JavaScript文件里的信息。</li>
+</ul>
+</li>
+<li><p>安装BeautifulSoup后，使用bs4模块下的BeautifulSoup类，可以将字符串或文件对象解析为BeautifulSoup对象。</p>
+</li>
+<li><p>BeautifulSoup里的find()和findAll()是最常用的两个函数。借助它们，可以通过标签的不同属性轻松地过滤HTML页面，查找需要的标签组或单个标签。</p>
+<ul>
+<li><p>find(tag=None,attrs={},recursive=True,text=None,**kwargs)</p>
+<ul>
+<li>标签参数tag，可以传一个标签名称或多个标签名称组成的列表做标签参数。</li>
+<li>属性参数attrs，用一个字典封装一个标签的若干属性和对应的属性值。</li>
+<li>递归参数recursive，是否递归抓取HTML文档标签结构的信息。</li>
+<li>文本参数text，用标签的文本内容去匹配，而不是用标签的属性。</li>
+<li>关键字参数kwargs(不常用)</li>
+</ul>
+</li>
+<li><p>findAll(tag=None,attrs={},recursive=True,text=None,limit=None,**kwargs)</p>
+<ul>
+<li>范围限制参数limit，find其实等价于findAll的limit等于1时的情形。</li>
+<li>其余参数与find函数的类似<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.findAll(&apos;span&apos;,&#123;&apos;class&apos;:&apos;red&apos;&#125;,True,None,1)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>get(self, key, default=None)</p>
+<ul>
+<li>通过属性名，获取标签属性的值，找不到会返回空值</li>
+</ul>
+</li>
+<li><p>select(self, selector, _candidate_generator=None, limit=None)</p>
+<ul>
+<li>通过CSS选择器来定位相应的标签，返回一个序列，如果想返回单个标签，可以使用select_one函数</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>使用BeautifulSoup库时常用的对象有四个：</p>
+<ul>
+<li>BeautifulSoup对象：使用BeautifulSoup库的基础</li>
+<li>标签Tag对象：BeautifulSoup对象通过find和findAll，或者直接调用子标签获取的一列对象或单个对象。</li>
+<li>NavigableString对象：用来表示标签里的文字，不是标签。</li>
+<li>Comment对象：用来查找HTML文档的注释标签。</li>
+</ul>
+</li>
+<li><p>和许多其他库一样，在BeautifulSoup库里，孩子(child)和后代(descendant)有显著不同：子标签是父标签的直接下级标签，而后代标签是父标签的所有下级标签。一般情况下，BeautifulSoup函数总是处理当前标签的后代标签。children属性用于返回子标签，descendants属性用于返回后代标签。</p>
+</li>
+<li><p>next_siblings属性返回当前标签的所有兄弟标签(向下)；previous_siblings属性返回当前标签的所有兄弟标签(向上)；next_sibling和previous_sibling属性与上述类似，只不过返回单个标签，而不是一组标签。</p>
+</li>
+<li><p>parents属性返回当前标签的所有父级标签，parent与其类似，返回单个标签。</p>
+</li>
+<li><p>正则表达式可以作为BeautifulSoup语句的任意一个参数</p>
+</li>
+<li><p>对于一个标签对象，使用attrs属性可以获取标签的全部属性。该属性是一个字典对象；调用get_text()方法可以返回标签的内容。</p>
+</li>
+<li><p>BeautifulSoup允许我们把特定函数类型当做findAll函数的参数。唯一的限制条件是这些函数必须把一个标签作为参数且返回结果是布尔类型。BeautifulSoup用这个函数来评估它遇到的每个标签对象，最后把评估结果为True的标签保留，把其他标签剔除。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">soup.findAll(lambda tag: len(tag.attrs) == 2)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/爬虫/" rel="tag"># 爬虫</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/20/Python程序设计-十一/" rel="next" title="Python程序设计(十一)">
+                <i class="fa fa-chevron-left"></i> Python程序设计(十一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/25/Python程序设计-十二/" rel="prev" title="Python程序设计(十二)">
+                Python程序设计(十二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

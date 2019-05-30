@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Session基础 Session提供了一种便利的方式来解决HTTP无状态问题，它将数据存储在服务器端，并且支持存储任何类型的数据；对于不同的客户端，Session是分开存储的，这也就意味着Session是基于客户端来进行数据存储的。">
+<meta name="keywords" content=".net">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Session详情">
+<meta property="og:url" content="http://yoursite.com/2017/11/08/Session详情/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="Session基础 Session提供了一种便利的方式来解决HTTP无状态问题，它将数据存储在服务器端，并且支持存储任何类型的数据；对于不同的客户端，Session是分开存储的，这也就意味着Session是基于客户端来进行数据存储的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-11-09T01:31:26.821Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Session详情">
+<meta name="twitter:description" content="Session基础 Session提供了一种便利的方式来解决HTTP无状态问题，它将数据存储在服务器端，并且支持存储任何类型的数据；对于不同的客户端，Session是分开存储的，这也就意味着Session是基于客户端来进行数据存储的。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/11/08/Session详情/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Session详情 | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/08/Session详情/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Session详情
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-11-08 09:22:00" itemprop="dateCreated datePublished" datetime="2017-11-08T09:22:00+08:00">2017-11-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-11-09 09:31:26" itemprop="dateModified" datetime="2017-11-09T09:31:26+08:00">2017-11-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Session基础"><a href="#Session基础" class="headerlink" title="Session基础"></a>Session基础</h3><ol>
+<li>Session提供了一种便利的方式来解决HTTP无状态问题，它将数据存储在服务器端，并且支持存储任何类型的数据；对于不同的客户端，Session是分开存储的，这也就意味着Session是基于客户端来进行数据存储的。<a id="more"></a></li>
+<li>Session优点:<ul>
+<li>维护用户状态和数据贯穿整个应用程序</li>
+<li>容易实现并可以存储任何类型的数据</li>
+<li>针对不同客户端数据分开存储</li>
+<li>对用户而言Session是安全透明的<br>Session缺点:</li>
+<li>在数据或用户过多时造成较大的性能开销，因为Session存储在服务器内存中</li>
+<li>Session数据的序列化和反序列化需要一定的开销，因为在StateServer和SQLServer Session模式下，存储和检索对象之前需要先序列化或反序列化对象。</li>
+</ul>
+</li>
+<li>ASP.NET使用一个120位识别码来跟踪每个Session，这是足够安全且不会被反向工程的。当客户端与服务器端进行通信时，仅仅有一个Session ID在两者之间进行传递。这个过程中主要由三个部分在起作用:Client(客户端)、Server(服务器端)、Session State Provider(Session状态提供器，即用于存储Session状态的地方)。</li>
+</ol>
+<h3 id="Session模式和状态提供器"><a href="#Session模式和状态提供器" class="headerlink" title="Session模式和状态提供器"></a>Session模式和状态提供器</h3><ol>
+<li>在ASP.NET中，支持以下四种Session模式:InProc、StateServer、SQLServer、Custom。每种模式使用不同的状态提供器，分别是:In-memory object、Aspnet_state.exe、Database、Custom provider。除此之外，还有一种模式为Off，选择该模式则意味着应用程序将禁用Session。</li>
+<li>Session状态本质上是针对应用程序维护Session所做的一系列设置，或者是在web.config中，或者是在code-behind中。在web.config中<sessionstate>节点用于Session配置，其中包括Mode,Timeout,StateConnectionString,CustomProvider等特性。</sessionstate></li>
+<li>在ASP.NET中有两个与Session相关的事件:Session_Start和Session_End，这两个事件均可以在全局文件中进行注册。</li>
+</ol>
+<h4 id="InProc"><a href="#InProc" class="headerlink" title="InProc"></a>InProc</h4><ul>
+<li>在ASP.NET中InProc是默认的Session模式，它将信息存储在当前应用程序域中。对应用程序的性能而言是最好的一种Session模式。但是缺点也很明显，如果重启服务器，它将丢失数据。同时，该模式也是唯一一种可以触发Session_End事件的模式。</li>
+<li>模式优点:<ul>
+<li>将Session数据存储到应用程序域中的一个内存对象中，因此访问速度快且易于获取</li>
+<li>不需要序列化和反序列化操作</li>
+<li>易于实现，和ViewState操作类似<br>模式缺点：</li>
+<li>服务器重启，数据丢失</li>
+<li>Session用户状态或数据过多时影响性能，由于内存使用</li>
+<li>不能在web graden场景下使用</li>
+<li>不适用于web farm场景</li>
+</ul>
+</li>
+</ul>
+<h4 id="StateServer"><a href="#StateServer" class="headerlink" title="StateServer"></a>StateServer</h4><ul>
+<li>StateServer模式又被称为Out-Proc模式。StateServer用一个单独的Windows服务(独立于IIS并且能够运行在一个分离的服务器上)。这种Session状态是由aspnet_state.exe管理的。由于其独立性，也就意味着如果ASP.NET应用程序重启，Session仍然存在并不会丢失。</li>
+<li>aspnet_state.exe作为一个Windows服务来运行，可以通过Windows管理器或命令行提示符(<code>net start aspnet_state</code>)来开启该服务，默认该服务的启动模式为手动启动，监听的TCP端口号是42424，可以通过修改注册表来改变其监听端口号。</li>
+<li>模式优点：<ul>
+<li>Session用户状态或数据与IIS分离，因此IIS的任何问题不会影响Session数据</li>
+<li>适用于web graden、web farm、负载均衡等场景<br>模式缺点：</li>
+<li>处理过程由于序列化和反序列化导致比较慢</li>
+<li>aspnet_state.exe需要一直处于运行状态</li>
+</ul>
+</li>
+</ul>
+<h4 id="SQLServer"><a href="#SQLServer" class="headerlink" title="SQLServer"></a>SQLServer</h4><ul>
+<li>在ASP.NET中SQLServer模式提供了一种更加安全可靠的Session管理方式，在这种模式下，Session数据被序列化后存储在一个SQL Server数据库中</li>
+<li>该模式的具体实现方式参照(<a href="https://www.codeproject.com/Articles/32545/Exploring-Session-in-ASP-Net" target="_blank" rel="noopener">https://www.codeproject.com/Articles/32545/Exploring-Session-in-ASP-Net</a>)</li>
+<li>模式优点：<ul>
+<li>如果重启IIS，Session用户状态或数据不受影响</li>
+<li>更加安全可靠的Session管理方式</li>
+<li>使数据中心化，有利于其他应用程序访问</li>
+<li>适用于web graden、web farm、负载均衡等场景<br>模式缺点：</li>
+<li>处理过程比较慢</li>
+<li>操作Session用户状态或数据时需要进行序列化或反序列化</li>
+<li>由于Session用户状态或数据由一个不同的服务器处理，因此必须确保SQL Server数据库一直处于运行状态</li>
+</ul>
+</li>
+</ul>
+<h4 id="Custom-参照上述网址"><a href="#Custom-参照上述网址" class="headerlink" title="Custom(参照上述网址)"></a>Custom(参照上述网址)</h4>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/net/" rel="tag"># .net</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/07/异步编程模式/" rel="next" title="异步编程模式">
+                <i class="fa fa-chevron-left"></i> 异步编程模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/09/生产环境概述/" rel="prev" title="生产环境概述">
+                生产环境概述 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Session基础"><span class="nav-number">1.</span> <span class="nav-text">Session基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Session模式和状态提供器"><span class="nav-number">2.</span> <span class="nav-text">Session模式和状态提供器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#InProc"><span class="nav-number">2.1.</span> <span class="nav-text">InProc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StateServer"><span class="nav-number">2.2.</span> <span class="nav-text">StateServer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SQLServer"><span class="nav-number">2.3.</span> <span class="nav-text">SQLServer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Custom-参照上述网址"><span class="nav-number">2.4.</span> <span class="nav-text">Custom(参照上述网址)</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

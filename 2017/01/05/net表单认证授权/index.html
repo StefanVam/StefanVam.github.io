@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="认证是识别用户的过程，授权是控制用户访问应用程序不同部分的过程 表单认证ASP.NET提供两种身份认证，一种是表单认证，用户身份通过HTTP请求进行传输–通常是作为cookie。另一种是Windows认证，用户身份派生自活动目录服务">
+<meta name="keywords" content=".net">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".net表单认证授权">
+<meta property="og:url" content="http://yoursite.com/2017/01/05/net表单认证授权/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="认证是识别用户的过程，授权是控制用户访问应用程序不同部分的过程 表单认证ASP.NET提供两种身份认证，一种是表单认证，用户身份通过HTTP请求进行传输–通常是作为cookie。另一种是Windows认证，用户身份派生自活动目录服务">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-05-09T03:28:58.979Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=".net表单认证授权">
+<meta name="twitter:description" content="认证是识别用户的过程，授权是控制用户访问应用程序不同部分的过程 表单认证ASP.NET提供两种身份认证，一种是表单认证，用户身份通过HTTP请求进行传输–通常是作为cookie。另一种是Windows认证，用户身份派生自活动目录服务">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/01/05/net表单认证授权/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>.net表单认证授权 | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/05/net表单认证授权/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">.net表单认证授权
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-01-05 16:32:01" itemprop="dateCreated datePublished" datetime="2017-01-05T16:32:01+08:00">2017-01-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-05-09 11:28:58" itemprop="dateModified" datetime="2017-05-09T11:28:58+08:00">2017-05-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>认证是识别用户的过程，授权是控制用户访问应用程序不同部分的过程</p>
+<h3 id="表单认证"><a href="#表单认证" class="headerlink" title="表单认证"></a>表单认证</h3><p>ASP.NET提供两种身份认证，一种是表单认证，用户身份通过HTTP请求进行传输–通常是作为cookie。另一种是Windows认证，用户身份派生自活动目录服务</p>
+<a id="more"></a>
+<ol>
+<li><p>表单认证系统由FormsAuthentication模块驱动，该模块会在AuthenticateRequest生命周期事件中进行一些操作，如果请求包含一个认证cookie，模块会将它与某个用户身份进行关联，防止每次用户请求都需要进行用户认证。直到cookie过期，再让用户进行重新认证。</p>
+</li>
+<li><p>配置ASP.NET认证</p>
+<ul>
+<li><p>首要任务是在web.config文件中进行认证配置，authentication元素属于system.web节点，该元素通过mode属性用来通知ASP.NET框架我们想要使用的认证方式，我们通过在其内部定义forms元素来配置表单认证。表单元素定义了很多属性，但对于大多数项目而言，默认值已经够用了。  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;system.web&gt;</span><br><span class="line">    &lt;authentication mode=&quot;Forms&quot;&gt;</span><br><span class="line">        &lt;forms timeout=&quot;120&quot;&gt;</span><br><span class="line">        &lt;/forms&gt;</span><br><span class="line">    &lt;/authentication&gt;</span><br><span class="line">&lt;/system.web&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过调用静态的FormsAuthentication.SetAuthCookie方法，可以通知表单认证系统在响应中添加一个认证cookie，FormsAuthentication类是表单认证系统的基础类，其中定义了很多方法和属性。(P675)</p>
+</li>
+<li><p>cookie的内容通过机器码进行加密，该机器码自动生成且每个服务器有自己的机器码。如果需要一系列服务器共享cookie你需要明确地为它们设置相同的机器码。通过machinekey配置元素。(P676)</p>
+</li>
+<li><p>可以通过HttpRequest和HttpContext对象来获取认证相关信息。如果已进行认证，HttpRequest.IsAuthenticated属性返回true，否则返回false；HttpContext.User对象返回一个实现了IPriciple接口的对象，该接口来自于System.Security.Principal命名空间。   </p>
+</li>
+<li><p>HttpContext.User包含一个实现了IIdentity接口的Identity属性，该属性返回已认证用户的身份信息，其中有一个Name属性即为SetAuthCookie方法传递的一个参数，如果用户未被认证，该属性则为空。</p>
+</li>
+<li><p>用户注销的话可以调用FormsAuthentication.SignOut()方法。 </p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="用户授权"><a href="#用户授权" class="headerlink" title="用户授权"></a>用户授权</h3><p>一旦通过认证系统识别了用户的身份，我们就可以使用授权系统来控制用户访问应用程序的能力。</p>
+<ul>
+<li>授权依赖于认证。如果不知道用户是谁便无法得知用户能够访问应用程序的哪一部分。ASP.NET熟练的将认证系统与授权系统相连接。当需要认证的请求未含有认证cookie时，浏览器会自动重定向到一个用户认证页面。</li>
+<li>与认证系统一样，首先我们需要在web.config中对授权系统进行配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;authentication mode=&quot;Forms&quot;&gt;</span><br><span class="line">    &lt;forms timeout=&quot;120&quot; loginUrl=&quot;/Account/Login.aspx&quot; defaultUrl=&quot;/Default.aspx&quot;&gt;</span><br><span class="line">    &lt;/forms&gt;</span><br><span class="line">&lt;/authentication&gt;</span><br><span class="line">&lt;system.web&gt;</span><br><span class="line">    &lt;authorization&gt;</span><br><span class="line">        &lt;deny users=&quot;?&quot;/&gt;</span><br><span class="line">    &lt;/authorization&gt;</span><br><span class="line">&lt;/system.web&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>上例中在authorization节点下添加deny节点来阻止未认证用户访问应用程序中的任何部分。在authentication节点下的forms节点中添加了loginurl属性和defaultUrl属性。当一个请求需要授权但还未进行认证则应用程序跳转到该属性中的url进行身份认证。同时在ReturlUrl参数中包含跳转前的url地址。如果直接请求认证页面则认证成功后跳转到defaultUrl属性中设置的url。</p>
+<ul>
+<li>调用FormsAuthentication.RedirectFromLoginPage静态方法会跳转URL到之前请求的页面。该方法既在响应中加入了认证cookie，又跳转了页面。比SetAuthCookie方法好用一点。</li>
+<li>在Authorization节点下，通配符?代表匿名，*代表所有</li>
+<li>上例直接在authorization中定义deny(allow)子节点，会将授权应用于整个应用程序。可以在web.config中添加一个授权应用程序指定部分的location节点(P685)，同时也可以通过模块注册事件来跳过指定页面的授权如登录页面(P687)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;system.web&gt;</span><br><span class="line">    &lt;/system.web&gt;</span><br><span class="line">    &lt;location path=&quot;Admin&quot;&gt;</span><br><span class="line">        &lt;system.web&gt;</span><br><span class="line">            &lt;authorization&gt;</span><br><span class="line">                &lt;allow roles=&quot;admins&quot;/&gt;</span><br><span class="line">                &lt;deny users=&quot;*&quot;/&gt;</span><br><span class="line">            &lt;/authorization&gt;</span><br><span class="line">        &lt;/system.web&gt;</span><br><span class="line">    &lt;/location&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="认证详情"><a href="#认证详情" class="headerlink" title="认证详情"></a>认证详情</h3><p>在ASP.NET中，Forms认证是由FormsAuthenticationModule实现的，URL的授权检查是由UrlAuthorizaitonModule实现的。</p>
+<ul>
+<li><p>在Forms身份认证中，由于登录状态是保存在Cookie中，而Cookie又是保存到客户端，因此，为了保证登录状态不被恶意用户伪造，ASP.NET采用了加密的方式保存登录状态。为了实现安全性，ASP.NET采用【Forms身份验证凭据】(即FormsAuthenticationTicket对象)来表示一个Forms登录用户，加密与解密由FormsAuthentication的Encrypt与Decrypt方法来实现。</p>
+</li>
+<li><p>用户登录的过程如下：</p>
+<ul>
+<li>检查用户提交的登录名和密码是否正确</li>
+<li>根据登录名创建一个FormsAuthenticationTicket对象，可以将用户额外信息存入userdata属性中</li>
+<li>调用FormsAuthentication.Encrypt()方法加密</li>
+<li>根据加密结果创建登录Cookie，并写入Response<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data = (new JavaScriptSerializer()).Serialize(userData);</span><br><span class="line">FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(2, loginName, DateTime.Now, DateTime.Now.AddDays(1), true, data);</span><br><span class="line">string cookieValue = FormsAuthentication.Encrypt(ticket);</span><br><span class="line">HttpCookie cookie = new HttpCookie(FormsAuthentication.FormsCookieName, cookieValue);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>获取用户信息，可通过在请求中获取登录Cookie，然后解密得到FormsAuthenticationTicket对象,然后获取其userdata属性，该属性为字符串再反序列化为用户对象即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HttpCookie cookie = context.Request.Cookies[FormsAuthentication.FormsCookieName];</span><br><span class="line">FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);</span><br><span class="line">userData = (new JavaScriptSerializer()).Deserialize&lt;TUserData&gt;(ticket.UserData);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><ol>
+<li>在使用表单认证系统的时候，尽量把授权操作放在代码中进行控制，不要放在配置文件中进行配置。对于验证操作放在配置文件中即可。</li>
+<li>在MVC框架中可以使用Authorize和AllowAnnoymous特性来进行授权控制。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/net/" rel="tag"># .net</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/26/JavaScript高级程序设计-十六/" rel="next" title="JavaScript高级程序设计(十六)">
+                <i class="fa fa-chevron-left"></i> JavaScript高级程序设计(十六)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/13/动态SQL/" rel="prev" title="动态SQL">
+                动态SQL <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#表单认证"><span class="nav-number">1.</span> <span class="nav-text">表单认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户授权"><span class="nav-number">2.</span> <span class="nav-text">用户授权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#认证详情"><span class="nav-number">3.</span> <span class="nav-text">认证详情</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意"><span class="nav-number">4.</span> <span class="nav-text">注意</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

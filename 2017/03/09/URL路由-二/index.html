@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="约束路由 通过把约束作为参数传递给MapRoute方法，可以定义约束。同默认值一样，约束被表示成一个匿名类型，该类型的属性对应于想要进行约束的片段变量名。">
+<meta name="keywords" content="MVC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="URL路由(二)">
+<meta property="og:url" content="http://yoursite.com/2017/03/09/URL路由-二/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="约束路由 通过把约束作为参数传递给MapRoute方法，可以定义约束。同默认值一样，约束被表示成一个匿名类型，该类型的属性对应于想要进行约束的片段变量名。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-03-10T05:41:16.132Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="URL路由(二)">
+<meta name="twitter:description" content="约束路由 通过把约束作为参数传递给MapRoute方法，可以定义约束。同默认值一样，约束被表示成一个匿名类型，该类型的属性对应于想要进行约束的片段变量名。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/03/09/URL路由-二/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>URL路由(二) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/09/URL路由-二/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">URL路由(二)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-03-09 14:01:08" itemprop="dateCreated datePublished" datetime="2017-03-09T14:01:08+08:00">2017-03-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-03-10 13:41:16" itemprop="dateModified" datetime="2017-03-10T13:41:16+08:00">2017-03-10</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="约束路由"><a href="#约束路由" class="headerlink" title="约束路由"></a>约束路由</h3><ol>
+<li><p>通过把约束作为参数传递给MapRoute方法，可以定义约束。同默认值一样，约束被表示成一个匿名类型，该类型的属性对应于想要进行约束的片段变量名。</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">routes.MapRoute(</span><br><span class="line">        name: null,</span><br><span class="line">        url: &quot;&#123;category&#125;/Page&#123;pageIndex&#125;&quot;,</span><br><span class="line">        defaults: new &#123; controller = &quot;Product&quot;, action = &quot;List&quot; &#125;,</span><br><span class="line">        constraints: new &#123; pageIndex = @&quot;\d+&quot; &#125;//正则表达式约束</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以对路由进行约束，以使它们只匹配以指定的HTTP方法进行请求的URL。(P324)</p>
+</li>
+<li><p>MVC框架包含了许多内置的约束，它们可以用来限制路由匹配基于类型和片段值的URL。(P325)</p>
+</li>
+</ol>
+<h3 id="属性路由"><a href="#属性路由" class="headerlink" title="属性路由"></a>属性路由</h3><p>前面所讲都是通过基于约定的路由技术进行定义。MVC5中增加了对属性路由这一技术的支持。在属性路由中，路由是由直接运用于控制器类的C#属性定义的。属性路由使得控制器依赖于应用程序的路由配置，不是很好。注意:属性路由默认情况下是禁用的，使用routes.MapMvcAttributeRoutes方法可以启用。(P329) </p>
+<h3 id="输出URL"><a href="#输出URL" class="headerlink" title="输出URL"></a>输出URL</h3><p>在视图中使用硬编码的URL会在修改应用程序的URL架构时，要更新所有对控制器和行为方法的引用，一个更好的替代方法是，使用路由系统来生成输出URL，这能够确保使用URL架构动态地生成URL。</p>
+<ol>
+<li>生成输出URL最简单的办法，是在视图中调用Html.ActionLink辅助器方法。</li>
+<li>输出URL的路由匹配需要满足一下三个条件:<ul>
+<li>URL模式中定义的每一个片段变量都必须有一个可用的值(它描述了路由系统确定各个片段变量值的数据来源及其取值顺序)。</li>
+<li>在给片段变量提供的值中，应当没有违背这条路由所定义的只默认变量的值。只默认变量是，为其提供了默认值，但未在URL模式中出现的变量。</li>
+<li>所有片段变量的值均必须满足路由约束。</li>
+</ul>
+</li>
+<li>如果试图生成一个无法找到匹配路由的URL，只会得到一个空href属性的链接。</li>
+<li>满足这些条件的第一个路由对象将产生一个非空的URL，并终止URL生成过程，为各个片段参数所选择的参数值将在其中被替换，并忽略尾部的默认值序列。如果明确的提供了一些参数，但它们与片段参数或默认参数不符，那么该方法将把这些参数以”键值对”的查询字符串形式进行追加。</li>
+<li>尽量使用相对URL。绝对URL会对应用程序的基础架构方式产生依赖性。一些依赖于绝对URL的大型应用程序，由于对网络基础架构或域名策略不一致的变化而最终衰败。</li>
+<li>Html.ActionLink辅助器方法会生成完整的HTML的a标签，Url.Action方法会只生成URL而不生成HTML元素。</li>
+<li>在行为方法中生成输出URL的方式有<ul>
+<li>Url.Action、Url.RouteUrl    //生成输出URL字符串</li>
+<li>RedirectToAction、RedirectToRoute    //生成输出URL并重定向</li>
+</ul>
+</li>
+<li>除了让路由系统去选择用来生成URL或链接的路由。还可以通过指定路由的方式来生成URL或链接，如Html.RouteLink方法，但这种指定路由的方式会违背关注点分离的本意。</li>
+</ol>
+<h3 id="区域"><a href="#区域" class="headerlink" title="区域"></a>区域</h3><p>MVC框架支持将Web应用程序组织成一些区域(Area)，每个区域代表应用程序的一个功能段，如管理、结算、客户支持等。如果对所有控制器、视图和模型只使用一组文件夹，可能难于管理。<br>每个MVC区域有自己的文件夹结构，让你能够保持事物分离。这会使项目元素和应用程序的每个功能区的相关性更加明显。有助于多个开发人员在同一个项目上工作而不会引起相互冲突。</p>
+<ol>
+<li>如果要给区域中的路由赋予名字，必须确保这些名称在整个应用程序而不仅仅在区域中是唯一的。(P354)</li>
+<li>不要修改Application_Start方法中与路由相关的语句顺序，因为路由是按顺序评估的。</li>
+<li>当一个区域被注册时，所定义的任何路由都被限制到与这个区域关联的命名空间中，但是在全局中定义的路由却不受类似的限制。因此仍可能会导致命名空间冲突的错误，此时可以将全局控制器命名空间列为优先。</li>
+<li>对于用户所处的同一区域中的行为，不需要采取特殊的步骤来创建指向这些行为的链接。MVC框架会检测当前请求涉及的特定区域，并确保输出URL只在该区域定义的路由中查找一个匹配。为了对不同区域的行为或根本无区域的行为创建一条链接，必须创建一个名为”area”的变量，并用它指定区域名。如果想链接到顶级控制器上的一个行为，那么应该把区域指定为空字符串。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MVC/" rel="tag"># MVC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/09/URL路由-一/" rel="next" title="URL路由(一)">
+                <i class="fa fa-chevron-left"></i> URL路由(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/10/控制器-一/" rel="prev" title="控制器(一)">
+                控制器(一) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#约束路由"><span class="nav-number">1.</span> <span class="nav-text">约束路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性路由"><span class="nav-number">2.</span> <span class="nav-text">属性路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出URL"><span class="nav-number">3.</span> <span class="nav-text">输出URL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区域"><span class="nav-number">4.</span> <span class="nav-text">区域</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

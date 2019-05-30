@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="视图基础 通过实现两个接口，便能够创建一个自定义视图引擎(P455)。视图引擎的复杂性来自于视图模板系统，这包括代码片段、支持布局，以及为优化性能而对模板进行的编译等。在Razor中，几乎所有MVC应用程序所需要的功能都是可用的。">
+<meta name="keywords" content="MVC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视图(一)">
+<meta property="og:url" content="http://yoursite.com/2017/03/20/视图-一/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="视图基础 通过实现两个接口，便能够创建一个自定义视图引擎(P455)。视图引擎的复杂性来自于视图模板系统，这包括代码片段、支持布局，以及为优化性能而对模板进行的编译等。在Razor中，几乎所有MVC应用程序所需要的功能都是可用的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-03-22T03:12:23.250Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="视图(一)">
+<meta name="twitter:description" content="视图基础 通过实现两个接口，便能够创建一个自定义视图引擎(P455)。视图引擎的复杂性来自于视图模板系统，这包括代码片段、支持布局，以及为优化性能而对模板进行的编译等。在Razor中，几乎所有MVC应用程序所需要的功能都是可用的。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/03/20/视图-一/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>视图(一) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/20/视图-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">视图(一)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-03-20 16:49:26" itemprop="dateCreated datePublished" datetime="2017-03-20T16:49:26+08:00">2017-03-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-03-22 11:12:23" itemprop="dateModified" datetime="2017-03-22T11:12:23+08:00">2017-03-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="视图基础"><a href="#视图基础" class="headerlink" title="视图基础"></a>视图基础</h3><ol>
+<li>通过实现两个接口，便能够创建一个自定义视图引擎(P455)。视图引擎的复杂性来自于视图模板系统，这包括代码片段、支持布局，以及为优化性能而对模板进行的编译等。在Razor中，几乎所有MVC应用程序所需要的功能都是可用的。<a id="more"></a></li>
+<li>视图的目的，是让开发人员将域模型部分的内容渲染成用户界面，为了实现这一目的，需要对视图添加动态内容。动态内容是在运行时生成的，并且可以随每个请求而不同。</li>
+<li>可以以不同方式对视图添加动态内容:<ul>
+<li>内联代码：用于小型的、自包含视图逻辑的片段，如if和foreach语句。这是在视图中创建动态内容的基本手段。</li>
+<li>HTML辅助器方法：用于生成一个独立的HTML元素或小片元素集合，典型地，是基于视图模型或视图数据的值。</li>
+<li>分段：用于创建内容分段，这种分段用于插入到布局中的特定位置。</li>
+<li>分部视图：用于在视图之间共享的子片段标记。分部视图也可以含有内联代码、HTML辅助器方法，以及引用其他分部视图。分部视图不调用行为方法，因此它们不能用来执行事务逻辑。</li>
+<li>子行为：用于创建可重用的UI控件，或需要含有事务逻辑的小部件。当使用子行为时，它调用一个行为方法，返回一个视图，并把结果注入到响应流中。</li>
+</ul>
+</li>
+</ol>
+<h3 id="使用分段"><a href="#使用分段" class="headerlink" title="使用分段"></a>使用分段</h3><p>Razor引擎支持分段的概念，这让你能够提供一个布局中的内容区域。Razor分段能够灵活地控制将视图的哪一部分插入到布局之中，以及把他们插入到哪儿。通过使用Razor的@section标签后跟一个分段名称的办法定义了分段。分段的内容可以混合HTML标记和Razor标签。可以在布局中使用@RenderSection辅助器方法来指定分段要插入的位置。</p>
+<ul>
+<li>一个视图只能定义在布局中被引用的分段。如果试图在视图中定义布局中无对应@RenderSection辅助器调用的分段，MVC框架会抛出异常。</li>
+<li>一般情况下不要把分段和视图中的其余部分混杂在一起。其约定是，在视图的开始或结尾定义分段，以便更容易看到哪些内容区域被处理成分段，以及哪些将要由RenderBody辅助器来捕捉。</li>
+<li>把视图定义成一个个独立的分段，有利于建立更清晰的视图，并减少了RenderBody捕捉无关内容的情况。为了使用这种方法，我们需要用RenderSection替换RenderBody辅助器的调用</li>
+<li>可以在布局页中使用IsSectionDefined方法，来避免RenderSecion调用视图中未定义的分段。但更优雅的方法是使用可选分段，即给RenderSection方法传递一个附加的bool值，false代表该分段可选。</li>
+</ul>
+<h3 id="使用分部视图"><a href="#使用分部视图" class="headerlink" title="使用分部视图"></a>使用分部视图</h3><p>通常需要在应用程序中多个不同的地方，使用同样的Razor标签和HTML标记片段。采取的办法不是重复这些标记，而是采用分部视图。分部视图是含有标签和标记片段的独立的视图，并且可以被包含在其他视图之中。可以在另一个视图中调用Html.Partial这一辅助器方法，来使用一个分部视图。</p>
+<ul>
+<li>Razor视图引擎对分部视图的查找方式，与规则视图相同(即在视图中的当前控制器所在文件夹和shared文件夹中进行查找)，这意味着，你可以创建控制器专用的特殊版本的分部视图。但分部视图最经常的用途之一就是在布局页中渲染内容。</li>
+<li>可以创建强类型分部视图，然后在渲染这个分部视图时，传递要使用的视图模型对象。</li>
+</ul>
+<h3 id="使用子行为"><a href="#使用子行为" class="headerlink" title="使用子行为"></a>使用子行为</h3><p>子行为是通过视图调用的行为方法。当希望将某种控制器逻辑用于应用程序的多个地方时，子行为可以让你避免重复的控制器逻辑。子行为与行为之间的关系，如同分部视图与视图一样。无论何时，当希望显示某些数据驱动的”小部件”，这些”小部件”要出现在多个页面上，而且含有与主行为无关的数据时，可能会希望使用子行为。</p>
+<ul>
+<li>任何一个行为都可以作为子行为，使用ChildActionOnly特性可以确保一个行为方法只能在一个视图中作为一个子行为进行调用。使用该特性，可以防止该行为方法作为用户请求的一个结果被调用。渲染子行为的方法为Html.Action辅助器。</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MVC/" rel="tag"># MVC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/20/游标/" rel="next" title="游标">
+                <i class="fa fa-chevron-left"></i> 游标
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/22/辅助器方法-一/" rel="prev" title="辅助器方法(一)">
+                辅助器方法(一) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#视图基础"><span class="nav-number">1.</span> <span class="nav-text">视图基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用分段"><span class="nav-number">2.</span> <span class="nav-text">使用分段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用分部视图"><span class="nav-number">3.</span> <span class="nav-text">使用分部视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用子行为"><span class="nav-number">4.</span> <span class="nav-text">使用子行为</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

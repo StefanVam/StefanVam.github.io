@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="当需要在一个选择器上调用一个方法，就可以执行一系列操作时，可以使用jQuery插件。  当使用$符号去选择元素时，它会返回一个包含所有你能够使用的方法(.css(),.click(),etc.)和匹配选择器的所有元素的一个jQuery对象。该对象从$.fn对象中获取这些方法。$.fn对象包含了所有的jQuery对象方法，如果我们想写自己的方法，也应该将其包含在$.fn对象中。">
+<meta name="keywords" content="jQuery">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jQuery插件编写">
+<meta property="og:url" content="http://yoursite.com/2017/08/08/JQuery插件编写/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="当需要在一个选择器上调用一个方法，就可以执行一系列操作时，可以使用jQuery插件。  当使用$符号去选择元素时，它会返回一个包含所有你能够使用的方法(.css(),.click(),etc.)和匹配选择器的所有元素的一个jQuery对象。该对象从$.fn对象中获取这些方法。$.fn对象包含了所有的jQuery对象方法，如果我们想写自己的方法，也应该将其包含在$.fn对象中。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-08-14T09:23:33.112Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="jQuery插件编写">
+<meta name="twitter:description" content="当需要在一个选择器上调用一个方法，就可以执行一系列操作时，可以使用jQuery插件。  当使用$符号去选择元素时，它会返回一个包含所有你能够使用的方法(.css(),.click(),etc.)和匹配选择器的所有元素的一个jQuery对象。该对象从$.fn对象中获取这些方法。$.fn对象包含了所有的jQuery对象方法，如果我们想写自己的方法，也应该将其包含在$.fn对象中。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/08/08/JQuery插件编写/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>jQuery插件编写 | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/08/JQuery插件编写/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">jQuery插件编写
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-08-08 13:52:51" itemprop="dateCreated datePublished" datetime="2017-08-08T13:52:51+08:00">2017-08-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-08-14 17:23:33" itemprop="dateModified" datetime="2017-08-14T17:23:33+08:00">2017-08-14</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>当需要在一个选择器上调用一个方法，就可以执行一系列操作时，可以使用jQuery插件。</p>
+<ol>
+<li><p>当使用$符号去选择元素时，它会返回一个包含所有你能够使用的方法(<code>.css()</code>,<code>.click()</code>,etc.)和匹配选择器的所有元素的一个jQuery对象。该对象从$.fn对象中获取这些方法。$.fn对象包含了所有的jQuery对象方法，如果我们想写自己的方法，也应该将其包含在$.fn对象中。</p>
+<a id="more"></a></li>
+<li><p>假设我们想要创建一个使检索到的元素的文字变成绿色的插件，所有我们要做的就是为$.fn添加一个自定义方法greenify，它将能够像其它jQuery对象方法一样被使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$.fn.greenify=function () &#123;</span><br><span class="line">    this.css(&apos;color&apos;,&apos;green&apos;);</span><br><span class="line">&#125;</span><br><span class="line">$( &quot;a&quot; ).greenify();//使得所有链接颜色变成绿色</span><br></pre></td></tr></table></figure>
+
+<p>在使用css()方法时，用的是this对象，而不是$(this)对象，因为greenify()方法和css()方法属于同一个对象。</p>
+</li>
+<li><p>jQuery的一个特性是支持链式编程，你可以在一个选择器上链接五或六个jQuery对象方法，这是通过所有的jQuery对象方法最后又返回了起初的jQuery对象来实现的(除了少数只获取值的jQuery对象方法不支持链式)。因此可以做如下操作，使得插件支持链式编程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$.fn.greenify=function () &#123;</span><br><span class="line">    return this.css(&apos;color&apos;,&apos;green&apos;);</span><br><span class="line">&#125;</span><br><span class="line">$( &quot;a&quot; ).greenify().addClass( &quot;greenified&quot; );</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>$符号在JavaScript库之间是非常流行的，如果既使用了其他库，又使用了jQuery，则需要用jQuery.noConflict()来让jQuery不再使用$符号。然而插件的编写使用的是$符号，为了使其可用，可以将其放在一个模拟的块级作用域中。如下所示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(function ( $ ) &#123;</span><br><span class="line"> </span><br><span class="line">    $.fn.greenify = function() &#123;</span><br><span class="line">        this.css( &quot;color&quot;, &quot;green&quot; );</span><br><span class="line">        return this;</span><br><span class="line">    &#125;;</span><br><span class="line"> </span><br><span class="line">&#125;( jQuery ));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>典型的jQuery对象往往含有任意数量DOM元素的引用，这也就是为什么jQuery对象经常引用的是一个集合。如果想要操作某些特定的元素可以使用each()方法来循环整个集合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$.fn.myNewPlugin = function() &#123;</span><br><span class="line">    return this.each(function() &#123;</span><br><span class="line">        // Do something to each element here.</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们返回的是each()方法的结果而不是this。因为each()方法将返回this，相比之前这是维护链式能力的更好的方式。</p>
+</li>
+<li><p>随着插件变得越来越复杂，通过接收可选项来让用户自定义插件也变得尤为重要，最简单的方式是通过接收一个对象字面量来维护可选项。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(function ( $ ) &#123;</span><br><span class="line">    $.fn.greenify = function( options ) &#123;</span><br><span class="line">        //如果可选项没有值，则使用默认值，如果可选项有值，则使用可选项的值，同时会改变默认值的值。</span><br><span class="line">        var settings = $.extend(&#123;</span><br><span class="line">            // These are the defaults.</span><br><span class="line">            color: &quot;#556b2f&quot;,</span><br><span class="line">            backgroundColor: &quot;white&quot;</span><br><span class="line">        &#125;, options );</span><br><span class="line">        return this.css(&#123;</span><br><span class="line">            color: settings.color,</span><br><span class="line">            backgroundColor: settings.backgroundColor</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;( jQuery ));</span><br><span class="line"></span><br><span class="line">$( &quot;div&quot; ).greenify(&#123;</span><br><span class="line">    color: &quot;orange&quot;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于默认值而言，最好的做法是将其暴露给用户，使得用户可以用尽量少的代码来自定义插件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$.fn.hilight = function( options ) &#123;</span><br><span class="line">    //第一个参数为空对象，目的是防止重写默认值。</span><br><span class="line">    var opts = $.extend( &#123;&#125;, $.fn.hilight.defaults, options );</span><br><span class="line"> </span><br><span class="line">    // Our plugin implementation code goes here.</span><br><span class="line"> </span><br><span class="line">&#125;;</span><br><span class="line">// 插件的默认值，作为插件方法的一个属性来进行使用。</span><br><span class="line">$.fn.hilight.defaults = &#123;</span><br><span class="line">    foreground: &quot;red&quot;,</span><br><span class="line">    background: &quot;yellow&quot;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/jQuery/" rel="tag"># jQuery</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/04/任务并行库-一/" rel="next" title="任务并行库(一)">
+                <i class="fa fa-chevron-left"></i> 任务并行库(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/10/任务并行库-二/" rel="prev" title="任务并行库(二)">
+                任务并行库(二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

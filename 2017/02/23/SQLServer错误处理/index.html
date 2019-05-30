@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="在Web开发中，我们通常验证用户的输入并通知用户的错误操作。这些用户操作是可预料到的错误，但我们也需要处理未预料到的错误–异常，即当我们编写代码时忽略了某些事情导致的错误。如果忽略这些错误，不仅会展示给用户不正确的信息，甚至会将错误数据保存到数据库。当错误发生时，及时提醒用户发生了什么也是相当重要的，以免用户认为操作成功了，实际上却什么都没执行。(http://www.sommarskog.se/">
+<meta name="keywords" content="T-SQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQLServer错误处理">
+<meta property="og:url" content="http://yoursite.com/2017/02/23/SQLServer错误处理/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="在Web开发中，我们通常验证用户的输入并通知用户的错误操作。这些用户操作是可预料到的错误，但我们也需要处理未预料到的错误–异常，即当我们编写代码时忽略了某些事情导致的错误。如果忽略这些错误，不仅会展示给用户不正确的信息，甚至会将错误数据保存到数据库。当错误发生时，及时提醒用户发生了什么也是相当重要的，以免用户认为操作成功了，实际上却什么都没执行。(http://www.sommarskog.se/">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-02-23T09:11:52.623Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQLServer错误处理">
+<meta name="twitter:description" content="在Web开发中，我们通常验证用户的输入并通知用户的错误操作。这些用户操作是可预料到的错误，但我们也需要处理未预料到的错误–异常，即当我们编写代码时忽略了某些事情导致的错误。如果忽略这些错误，不仅会展示给用户不正确的信息，甚至会将错误数据保存到数据库。当错误发生时，及时提醒用户发生了什么也是相当重要的，以免用户认为操作成功了，实际上却什么都没执行。(http://www.sommarskog.se/">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/02/23/SQLServer错误处理/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>SQLServer错误处理 | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/23/SQLServer错误处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQLServer错误处理
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-02-23 10:56:04 / Geändert am: 17:11:52" itemprop="dateCreated datePublished" datetime="2017-02-23T10:56:04+08:00">2017-02-23</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在Web开发中，我们通常验证用户的输入并通知用户的错误操作。这些用户操作是可预料到的错误，但我们也需要处理未预料到的错误–异常，即当我们编写代码时忽略了某些事情导致的错误。如果忽略这些错误，不仅会展示给用户不正确的信息，甚至会将错误数据保存到数据库。当错误发生时，及时提醒用户发生了什么也是相当重要的，以免用户认为操作成功了，实际上却什么都没执行。(<a href="http://www.sommarskog.se/error_handling/Part1.html" target="_blank" rel="noopener">http://www.sommarskog.se/error_handling/Part1.html</a>)</p>
+<a id="more"></a>
+<h3 id="必要的命令"><a href="#必要的命令" class="headerlink" title="必要的命令"></a>必要的命令</h3><ul>
+<li><p>TRY-CATCH<br>处理异常最主要的语句是TRY-CATCH，与其他语言中的结构相似，语句格式如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">BEGIN TRY</span><br><span class="line">    --正常操作</span><br><span class="line">END TRY</span><br><span class="line">BEGIN CATCH</span><br><span class="line">    --异常操作</span><br><span class="line">END CATCH</span><br></pre></td></tr></table></figure>
+
+<p>如果正常操作中调用了存储过程或触发器，在其中发生了错误也会跳转到CATCH语句块。确切的说，当发生错误时，如果存在CATCH语句块，则执行CATCH块中的语句，否则，将发送错误到客户端。<br>对于TRY-CATCH语句而言，它并不会捕获相同作用域中的编译型错误。如缺少列名、错误的别名等等。(编译型错误在运行时出现的原因是由于名称延迟解析，一个典型的地方出现在存储过程中允许引用不存在的表)<br>编译型错误并非不能捕获，你不能在它出现的作用域中捕获他们，但你能够捕获它们在外部作用域中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">CREATE proc [dbo].[testerror]</span><br><span class="line">as</span><br><span class="line">begin</span><br><span class="line">    begin try</span><br><span class="line">    select * from hh;  --一个不存在的表名</span><br><span class="line">    end try</span><br><span class="line">    begin catch</span><br><span class="line">    print error_message();</span><br><span class="line">    end catch</span><br><span class="line">end</span><br><span class="line">create proc [dbo].[testerror1]</span><br><span class="line">as</span><br><span class="line">begin</span><br><span class="line">    begin try</span><br><span class="line">        exec testerror; </span><br><span class="line">    end try</span><br><span class="line">    begin catch</span><br><span class="line">        print error_message();</span><br><span class="line">    end catch</span><br><span class="line">end</span><br><span class="line">GO</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>SET XACT_ABORT ON<br>存储过程应该总是包含下列语句</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET XACT_ABORT,NOCOUNT ON;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="错误处理通用模式"><a href="#错误处理通用模式" class="headerlink" title="错误处理通用模式"></a>错误处理通用模式</h3><ol>
+<li><p>存储过程中的所有代码都应该在BEGIN TRY之后编写：变量声明、临时表的创建、表变量等等</p>
+</li>
+<li><p>对于TRY语句块而言，不同的存储过程，其中的代码大不相同；但对于CATCH语句块来说，大部分存储过程编写的都类似。CATCH处理程序包含下面三种行为:</p>
+<ul>
+<li>回滚任何打开的事务</li>
+<li>重新抛出错误</li>
+<li>确保存储过程的返回值为非零数值<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">BEGIN CATCH</span><br><span class="line">     IF @@trancount &gt; 0 ROLLBACK TRANSACTION</span><br><span class="line">     DECLARE @msg nvarchar(2048) = error_message()</span><br><span class="line">     RAISERROR (@msg, 16, 1)</span><br><span class="line">     RETURN 55555</span><br><span class="line">END CATCH</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>总是在CATCH处理程序中回滚事务是绝对有必要的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IF @@trancount&gt;0 ROLLBACK TRANSACTION  --判断事务数量，防止内层事务已经回滚</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>声明一个变量并将其初始化时SQL2008以及之后版本才支持的。SQL2005需要两步操作。</p>
+</li>
+<li><p>重新抛出错误的目的，是当存储过程被其他存储过程重用时外层存储过程也能捕获到错误，而不是内层捕获后弃之不理。</p>
+</li>
+<li><p>返回值可以用于那些在SQL2005之前写的代码，通过非零返回值可以确定出现了错误。</p>
+</li>
+<li><p>简单的使用RAISERROR来抛出错误在出现存储过程嵌套时，显得有些吃力，尽管错误信息都一样，但是RAISERROR函数给出的错误代码行号和发生错误的存储过程名有可能不正确，导致无法定位到问题代码段。</p>
+</li>
+<li><p>调用自定义存储过程来重新抛出错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">CREATE PROCEDURE error_handler_sp AS</span><br><span class="line"></span><br><span class="line">DECLARE @errmsg   nvarchar(2048),</span><br><span class="line">        @severity tinyint,</span><br><span class="line">        @state    tinyint,</span><br><span class="line">        @errno    int,</span><br><span class="line">        @proc     sysname,</span><br><span class="line">        @lineno   int</span><br><span class="line">        </span><br><span class="line">SELECT @errmsg = error_message(), @severity = error_severity(),</span><br><span class="line">       @state  = error_state(), @errno = error_number(),</span><br><span class="line">       @proc   = error_procedure(), @lineno = error_line()</span><br><span class="line">    </span><br><span class="line">IF @errmsg NOT LIKE &apos;***%&apos; --避免错误信息二次修改</span><br><span class="line">BEGIN</span><br><span class="line">   SELECT @errmsg = &apos;*** &apos; + coalesce(quotename(@proc), &apos;&lt;dynamic SQL&gt;&apos;) + </span><br><span class="line">                    &apos;, Line &apos; + ltrim(str(@lineno)) + &apos;. Errno &apos; + </span><br><span class="line">                    ltrim(str(@errno)) + &apos;: &apos; + @errmsg</span><br><span class="line">END</span><br><span class="line">RAISERROR(&apos;%s&apos;, @severity, @state, @errmsg)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在SQLServer2012及以上版本可以直接使用Throw语句进行错误抛出。但是书写时最好在其前面加上;即<code>;Throw</code>，最好使用自定义存储过程</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/T-SQL/" rel="tag"># T-SQL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/22/Json基础/" rel="next" title="Json基础">
+                <i class="fa fa-chevron-left"></i> Json基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/24/AJAX(一)/" rel="prev" title="AJAX(一)">
+                AJAX(一) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#必要的命令"><span class="nav-number">1.</span> <span class="nav-text">必要的命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误处理通用模式"><span class="nav-number">2.</span> <span class="nav-text">错误处理通用模式</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

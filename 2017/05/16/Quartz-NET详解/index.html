@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="核心概念 scheduler:任务调度器trigger:触发器，用于定义任务调度时间规则job:任务，即被调度的任务misfire:错过的，指本应该被执行但实际没有执行的任务调度">
+<meta name="keywords" content=".NET第三方类库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Quartz.NET详解">
+<meta property="og:url" content="http://yoursite.com/2017/05/16/Quartz-NET详解/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="核心概念 scheduler:任务调度器trigger:触发器，用于定义任务调度时间规则job:任务，即被调度的任务misfire:错过的，指本应该被执行但实际没有执行的任务调度">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-05-19T06:46:31.849Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Quartz.NET详解">
+<meta name="twitter:description" content="核心概念 scheduler:任务调度器trigger:触发器，用于定义任务调度时间规则job:任务，即被调度的任务misfire:错过的，指本应该被执行但实际没有执行的任务调度">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/05/16/Quartz-NET详解/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Quartz.NET详解 | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/16/Quartz-NET详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Quartz.NET详解
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-05-16 11:27:17" itemprop="dateCreated datePublished" datetime="2017-05-16T11:27:17+08:00">2017-05-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-05-19 14:46:31" itemprop="dateModified" datetime="2017-05-19T14:46:31+08:00">2017-05-19</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h3><ol>
+<li>scheduler:任务调度器<br>trigger:触发器，用于定义任务调度时间规则<br>job:任务，即被调度的任务<br>misfire:错过的，指本应该被执行但实际没有执行的任务调度<a id="more"></a></li>
+<li>IJob:是一个接口，只有一个方法void execute(IJobExecutionContext context)，开发者实现该接口定义运行任务，IJobExecutionContext类提供了调度上下文的各种信息。Job运行时的信息保存在JobDataMap实例中。</li>
+<li>JobDetail:Quartz.NET在每次执行Job时，都重新创建一个Job实例，所以它不直接接收一个Job的实例，相反它接收一个Job实现类，以便运行时通过反射机制实例化Job，因此需要通过一个类来描述Job的实现类及其他相关的静态信息，如Job名字、描述、关联监听器等信息，JobDetail承担了这一角色。</li>
+<li>Trigger:是一个类，描述触发Job执行的时间触发规则。主要有SimpleTrigger和CromTrigger这两个子类。当仅需要触发一次或者以固定时间间隔周期执行，SimpleTrigger是最合适的选择；而CronTrigger则可以通过Cron表达式定义出各种复杂时间规则的调度方案:如每早晨9:00执行，周一、周三、周五下午5:00执行等。</li>
+<li>Calendar:它是一些日历特定时间点的集合。一个Trigger可以和多个Calendar关联，以便排除或包含某些时间点。</li>
+<li>Scheduler:代表一个Quartz的独立运行容器，Trigger和JobDetail可以注册到Scheduler中，两者在Scheduler中拥有各自的组及名称，组及名称是Scheduler查找定位容器中某一对象的依据，Trigger的组及名称必须唯一，JobDetail的组和名称也必须唯一。</li>
+<li>ThreadPool:Scheduler使用一个线程池作为任务运行的基础设施，任务通过共享线程池中的线程提高运行效率。</li>
+<li>一个Job可以对应多个Trigger，但一个Trigger只能对应一个Job。</li>
+</ol>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><ul>
+<li><p>任务调度器的生命周期从通过SchedulerFactory创建开始到调用Shutdown()方法结束，可以通过任务调度器添加Jobs和对应的Triggers，也可以执行一些其他与调度相关的操作。</p>
+</li>
+<li><p>Job实例的Execute方法可以通过JobDataMap类来访问外部的一些数据。</p>
+</li>
+<li><p>Job和Trigger的绑定方式有两种</p>
+<ul>
+<li><p>编程模式：Quartz使用”builder”类来声明领域特定语言(Domain Specific Language,或者叫做”fluent interface”)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">//声明一个任务调度器</span><br><span class="line">IScheduler sched = StdSchedulerFactory.GetDefaultScheduler();</span><br><span class="line">sched.Start();</span><br><span class="line">    // 声明一个任务并绑定到对应的实现了IJob接口的类</span><br><span class="line">IJobDetail job = JobBuilder.Create&lt;HelloJob&gt;()</span><br><span class="line">    .WithIdentity(&quot;myJob&quot;, &quot;group1&quot;) // name &quot;myJob&quot;, group &quot;group1&quot;</span><br><span class="line">    .Build();</span><br><span class="line">    </span><br><span class="line">// 声明一个使用简单模式的触发器，从现在开始，时间间隔为40，重复执行</span><br><span class="line">ITrigger trigger = TriggerBuilder.Create()</span><br><span class="line">    .WithIdentity(&quot;myTrigger&quot;, &quot;group1&quot;)</span><br><span class="line">    .StartNow()</span><br><span class="line">    .WithSimpleSchedule(x =&gt; x</span><br><span class="line">        .WithIntervalInSeconds(40)</span><br><span class="line">        .RepeatForever())            </span><br><span class="line">    .Build();</span><br><span class="line">    </span><br><span class="line">// 把任务和对应的触发器注册到任务调度器中</span><br><span class="line">sched.scheduleJob(job, trigger);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置模式：使用配置模式，需要创建两个配置文件，一个是quartz.config(用于Quartz.Net框架自动读取)，另一个是任务与触发器对应的文件(文件名来自于quartz.config中quartz.plugin.xml.fileNames的指向)，该文件为xml格式。<br>quartz.config:   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># You can configure your scheduler in either &lt;quartz&gt; configuration section</span><br><span class="line"># or in quartz properties file</span><br><span class="line"># Configuration section has precedence</span><br><span class="line">quartz.scheduler.instanceName = ServerScheduler</span><br><span class="line"># configure thread pool info</span><br><span class="line">quartz.threadPool.type = Quartz.Simpl.SimpleThreadPool, Quartz</span><br><span class="line">quartz.threadPool.threadCount = 10</span><br><span class="line">quartz.threadPool.threadPriority = Normal</span><br><span class="line"># job initialization plugin handles our xml reading, without it defaults are</span><br><span class="line">used</span><br><span class="line">quartz.plugin.xml.type = Quartz.Plugin.Xml.XMLSchedulingDataProcessorPlugin,</span><br><span class="line">Quartz</span><br><span class="line">quartz.plugin.xml.fileNames = ~/quartz_jobs.xml</span><br><span class="line"># export this server to remoting context</span><br><span class="line">quartz.scheduler.exporter.type = Quartz.Simpl.RemotingSchedulerExporter,</span><br><span class="line">Quartz</span><br><span class="line">quartz.scheduler.exporter.port = 555</span><br><span class="line">quartz.scheduler.exporter.bindName = QuartzScheduler</span><br><span class="line">quartz.scheduler.exporter.channelType = tcp</span><br><span class="line">quartz.scheduler.exporter.channelName = httpQuartz</span><br></pre></td></tr></table></figure>
+
+<p>quartz_jobs.xml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">    &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!-- This file contains job definitions in schema version 2.0 format --&gt;</span><br><span class="line"></span><br><span class="line">    &lt;job-scheduling-data xmlns=&quot;http://quartznet.sourceforge.net/JobSchedulingData&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; version=&quot;2.0&quot;&gt;</span><br><span class="line"></span><br><span class="line">  &lt;processing-directives&gt;</span><br><span class="line">    &lt;overwrite-existing-data&gt;true&lt;/overwrite-existing-data&gt;</span><br><span class="line">  &lt;/processing-directives&gt;</span><br><span class="line"></span><br><span class="line">  &lt;schedule&gt;</span><br><span class="line">    &lt;!--TestJob测试 任务配置--&gt;</span><br><span class="line">    &lt;job&gt;</span><br><span class="line">      &lt;name&gt;TestJob&lt;/name&gt;</span><br><span class="line">      &lt;group&gt;Test&lt;/group&gt;</span><br><span class="line">      &lt;description&gt;TestJob测试&lt;/description&gt;</span><br><span class="line">      &lt;job-type&gt;Quartz1.TestJob,Quartz1&lt;/job-type&gt;</span><br><span class="line">      &lt;durable&gt;true&lt;/durable&gt;</span><br><span class="line">      &lt;recover&gt;false&lt;/recover&gt;</span><br><span class="line">    &lt;/job&gt;</span><br><span class="line">    &lt;trigger&gt;</span><br><span class="line">      &lt;cron&gt;</span><br><span class="line">        &lt;name&gt;TestJobTrigger&lt;/name&gt;</span><br><span class="line">        &lt;group&gt;Test&lt;/group&gt;</span><br><span class="line">        &lt;job-name&gt;TestJob&lt;/job-name&gt;</span><br><span class="line">        &lt;job-group&gt;Test&lt;/job-group&gt;</span><br><span class="line">        &lt;start-time&gt;2015-01-22T00:00:00+08:00&lt;/start-time&gt;</span><br><span class="line">        &lt;cron-expression&gt;0/3 * * * * ?&lt;/cron-expression&gt;</span><br><span class="line">      &lt;/cron&gt;</span><br><span class="line">    &lt;/trigger&gt;</span><br><span class="line">  &lt;/schedule&gt;</span><br><span class="line">&lt;/job-scheduling-data&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="cron表达式"><a href="#cron表达式" class="headerlink" title="cron表达式"></a>cron表达式</h3><p>cron表达式是一个字符串，字符串以5或6个空格隔开，分为6或7个域，每个域代表一个含有，语法格式为：秒 分 时 日 月 周 [年]，其中年域可写可不写。</p>
+<ol>
+<li>每个域可出现的字符如下:<ul>
+<li>秒：可出现”,-*/“四个字符，有效范围为0-59的整数</li>
+<li>分：可出现”,-*/“四个字符，有效范围为0-59的整数</li>
+<li>时：可出现”,-*/“四个字符，有效范围为0-23的整数</li>
+<li>日：可出现”,-*/?LWC”八个字符，有效范围为0-31的整数</li>
+<li>月：可出现”,-*/“四个字符，有效范围为1-12的整数或JAN-DEC</li>
+<li>周：可出现”,-*/?LC#”八个字符，有效范围为1-7的整数或SUN-SAT</li>
+<li>年：可出现”,-*/“四个字符，有效范围为1970-2099</li>
+</ul>
+</li>
+<li>每一个域都使用数字，但还可以出现如下特殊字符，它们的含义是：<ul>
+<li>*：表示匹配该域的任意值，假如在分域中使用，则表示每分钟都会触发事件</li>
+<li>?：只能在日和周两个域中使用，它也匹配域中的任意值，但实际不会。因为日和周会相互影响。例如想在每月的20日触发事件，不管20日到底是星期几，则只能使用?</li>
+<li>-：表示范围，例如在分域中使用5-20，表示从5分钟到20分钟每分钟触发一次</li>
+<li>/：表示起始时间开始触发，然后每隔固定时间触发一次，例如在分域中使用5/20，则意味着5分时开始触发，然后每隔20分钟触发一次</li>
+<li>,：表示列出枚举值。例如在分域中使用5,20，则表示在5分和20分钟时触发</li>
+<li>L：表示最后，如在周域中使用5L，意味着在最后的一个星期四触发。</li>
+<li>W：表示有效工作日，只能出现在日域中，系统将在离指定日期最近的有效工作日触发事件。</li>
+<li>#：用于确定每个月第几个星期几，只能出现在周域中，例如4#2，表示某月的第二个星期三。</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NET第三方类库/" rel="tag"># .NET第三方类库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/15/Windows服务/" rel="next" title="Windows服务">
+                <i class="fa fa-chevron-left"></i> Windows服务
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/23/捆绑包/" rel="prev" title="捆绑包">
+                捆绑包 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心概念"><span class="nav-number">1.</span> <span class="nav-text">核心概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体实现"><span class="nav-number">2.</span> <span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cron表达式"><span class="nav-number">3.</span> <span class="nav-text">cron表达式</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="模型绑定是指，用浏览器以HTTP请求发送的数据来创建.NET对象的过程。每当定义具有参数的行为方法时，一直是依赖着这种模型绑定过程。这个参数对象是通过模型绑定来自请求中的数据创建的。">
+<meta name="keywords" content="MVC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模型绑定(一)">
+<meta property="og:url" content="http://yoursite.com/2017/05/02/模型绑定-一/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="模型绑定是指，用浏览器以HTTP请求发送的数据来创建.NET对象的过程。每当定义具有参数的行为方法时，一直是依赖着这种模型绑定过程。这个参数对象是通过模型绑定来自请求中的数据创建的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-09-08T09:29:19.489Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="模型绑定(一)">
+<meta name="twitter:description" content="模型绑定是指，用浏览器以HTTP请求发送的数据来创建.NET对象的过程。每当定义具有参数的行为方法时，一直是依赖着这种模型绑定过程。这个参数对象是通过模型绑定来自请求中的数据创建的。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/05/02/模型绑定-一/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>模型绑定(一) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/02/模型绑定-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">模型绑定(一)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-05-02 13:17:58" itemprop="dateCreated datePublished" datetime="2017-05-02T13:17:58+08:00">2017-05-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-09-08 17:29:19" itemprop="dateModified" datetime="2017-09-08T17:29:19+08:00">2017-09-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>模型绑定是指，用浏览器以HTTP请求发送的数据来创建.NET对象的过程。每当定义具有参数的行为方法时，一直是依赖着这种模型绑定过程。这个参数对象是通过模型绑定来自请求中的数据创建的。</p>
+<a id="more"></a>
+<h3 id="理解模型绑定"><a href="#理解模型绑定" class="headerlink" title="理解模型绑定"></a>理解模型绑定</h3><ol>
+<li>模型绑定是HTTP请求与C#方法之间的一个巧妙的销量，其中的C#方法在MVC中即为行为方法。</li>
+<li>行为调用器会使用路由系统所给定的路由，判断为该请求进行服务所需要的行为方法。但此刻还不能调用，需要等待直到该方法的参数已经有了有用的值。默认的行为调用器ControllerActionInvoker，要依靠模型绑定器来生成调用行为所需要的数据对象。模型绑定器由IModelBinder接口所定义。</li>
+<li>在一个MVC应用程序中，可以有多个模型绑定器，而每个绑定器负责绑定一个或多个模型类型。当行为调用器需要调用一个行为方法时，它会考察该方法所定义的参数，并查找各个参数类型所依赖的模型绑定器。</li>
+<li>模型绑定必然经过一些步骤<ul>
+<li>检测目标对象(要创建的对象，这种对象通常是行为方法的参数)的名称和类型。</li>
+<li>通过对象名称查找数据源(请求)，并找到可用数据(通常是字符串)。</li>
+<li>根据对象类型将找到的数据值转换成目标类型。</li>
+<li>通过对象名称、对象类型和这种经过处理的数据来构造目标对象。</li>
+<li>将构造好的对象送给行为调用器，并由行为调用器将对象注入到目标行为方法中去。</li>
+</ul>
+</li>
+<li>当行为调用器找不到绑定某个类型的自定义绑定器时，默认的模型绑定DefaultModelBinder便是由行为调用器所使用的一个绑定器。默认情况下，这个模型绑定器会搜索四个位置:Request.Form、RouteData.Values、Request.QueryString、Request.files。以获取与被绑定的参数名匹配的数据。这些位置被依序搜索。只要找到一个值，搜索便停止。</li>
+</ol>
+<h3 id="绑定简单类型"><a href="#绑定简单类型" class="headerlink" title="绑定简单类型"></a>绑定简单类型</h3><p>当处理简单参数类型时，DefaultModelBinder会尝试使用System.ComponentModel.TypeDescriptor类，将已经从请求数据中获得的字符串数值转换成参数类型。如果无法转换这个值，那么DefaultModelBinder便不能绑定该模型。对于值类型的参数，可以通过设置为可空类型或默认值来处理类型转换失败的问题。</p>
+<h3 id="绑定复杂类型"><a href="#绑定复杂类型" class="headerlink" title="绑定复杂类型"></a>绑定复杂类型</h3><ol>
+<li><p>当行为方法参数是复合类型时(即不能用TypeConverter类进行转换的属性)(能够用TypeConverter类进行转换的类型称为基元类型或简单类型)。DefaultModelBinder类将用反射来获取public属性集，然后依次进行绑定。</p>
+</li>
+<li><p>当复杂类型的某个属性是另外一个复杂类型时，在为该属性中的属性查找值时，模型绑定器查找的是该属性名与该属性中的属性名的组合。下面代码中，如果要查找grade属性中的name值，模型绑定器会去查找grade.name的值。(P560)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public ActionResult Index(Person person)</span><br><span class="line">&#123;</span><br><span class="line">    return View();</span><br><span class="line">&#125;</span><br><span class="line">public class Person</span><br><span class="line">&#123;</span><br><span class="line">    [DisplayName(&quot;姓名&quot;)]</span><br><span class="line">    public string name &#123; set; get; &#125;</span><br><span class="line">    [HiddenInput(DisplayValue =false)]</span><br><span class="line">    public string age &#123; set; get; &#125;</span><br><span class="line">    public bool gender &#123; set; get; &#125;</span><br><span class="line"></span><br><span class="line">    public Grade grade &#123; set; get; &#125;</span><br><span class="line">&#125;</span><br><span class="line">public class Grade</span><br><span class="line">&#123;</span><br><span class="line">    public string name &#123; set; get; &#125;</span><br><span class="line">    public string type &#123; set; get; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当参数为简单类型的数组或集合时，模型绑定器会去查找与参数具有同样名称的数据项，并创建一个包含这些值的数组。对于同步提交表单而言，只需要将表单的name设置为参数名称即可；对于异步提交表单而言，可以直接将数组赋值给参数名，此时http请求参数名的后面会多一个[]，但是不影响后台获取集合的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public ActionResult Index(IList&lt;string&gt; names)</span><br><span class="line">&#123;</span><br><span class="line">    return View();</span><br><span class="line">&#125;</span><br><span class="line">&lt;input id=&quot;names&quot; name=&quot;names&quot; type=&quot;text&quot; value=&quot;&quot;&gt;</span><br><span class="line">&lt;input id=&quot;names&quot; name=&quot;names&quot; type=&quot;text&quot; value=&quot;&quot;&gt;</span><br><span class="line">&lt;input id=&quot;names&quot; name=&quot;names&quot; type=&quot;text&quot; value=&quot;&quot;&gt; </span><br><span class="line">$.post(&quot;@Url.Action(&quot;Index&quot;)&quot;, &#123;names:[&quot;张三&quot;,&quot;李四&quot;,&quot;王五&quot;]&#125;,function(data)</span><br><span class="line">&#123;</span><br><span class="line">    alert(&quot;123&quot;);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当参数为复杂类型的数组或集合时，模型绑定器会利用name标签属性中的数组索引前缀获取对象的属性值。以[0]为前缀的那些属性表示第一个对象，以[1]为前缀的那些属性则表示第二个对象，以此类推。</p>
+</li>
+<li><p>有些时候，生成的HTML与一种类型的对象有关，但希望将其绑定到另一个对象。这意味着，视图包含的前缀与模型绑定器期望的结构不对应，于是对数据不能做适当的处理。可通过对行为方法的参数运用Bind特性来解决此类问题，目的是用它来告诉绑定器，应该查找哪一个前缀。(P563)</p>
+</li>
+<li><p>通过在行为方法参数上使用Bind特性也可以有选择性地绑定属性，可以防止一定的恶意攻击。(P563)</p>
+</li>
+</ol>
+<h3 id="手工调用模型绑定"><a href="#手工调用模型绑定" class="headerlink" title="手工调用模型绑定"></a>手工调用模型绑定</h3><p>当行为方法定义了参数时，模型绑定过程是自动执行的，但也可以直接控制这一个过程。通过向UpdateModel方法传递想要绑定的类型实例参数，会试图用标准的绑定过程来获取其public属性的值。当手工调用绑定过程时，可以将绑定过程限制到一个单一的数据源。(P570)<br>用户难免会提供一些不能绑定到相应模型属性的值–如，无效日期或对数值输入文本等。当使用手工调用模型绑定时，需要负责处理诸如此类的错误。模型绑定器通过抛出InvalidOperationException异常来表示绑定错误。错误的细节通过ModelState特性来进行检查。</p>
+<h3 id="定制模型绑定系统-P571"><a href="#定制模型绑定系统-P571" class="headerlink" title="定制模型绑定系统(P571)"></a>定制模型绑定系统(P571)</h3>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MVC/" rel="tag"># MVC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/14/辅助器方法-三/" rel="next" title="辅助器方法(三)">
+                <i class="fa fa-chevron-left"></i> 辅助器方法(三)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/05/Python程序设计-一/" rel="prev" title="Python程序设计(一)">
+                Python程序设计(一) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#理解模型绑定"><span class="nav-number">1.</span> <span class="nav-text">理解模型绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绑定简单类型"><span class="nav-number">2.</span> <span class="nav-text">绑定简单类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绑定复杂类型"><span class="nav-number">3.</span> <span class="nav-text">绑定复杂类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手工调用模型绑定"><span class="nav-number">4.</span> <span class="nav-text">手工调用模型绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定制模型绑定系统-P571"><span class="nav-number">5.</span> <span class="nav-text">定制模型绑定系统(P571)</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

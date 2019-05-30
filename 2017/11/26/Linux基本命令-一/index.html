@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="shell即命令解释器，根据输入的命令执行相应命令。shell的种类有很多，bash是许多Linux平台的内定shell。">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux基本命令(一)">
+<meta property="og:url" content="http://yoursite.com/2017/11/26/Linux基本命令-一/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="shell即命令解释器，根据输入的命令执行相应命令。shell的种类有很多，bash是许多Linux平台的内定shell。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-11-27T09:57:56.623Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux基本命令(一)">
+<meta name="twitter:description" content="shell即命令解释器，根据输入的命令执行相应命令。shell的种类有很多，bash是许多Linux平台的内定shell。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2017/11/26/Linux基本命令-一/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Linux基本命令(一) | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/26/Linux基本命令-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux基本命令(一)
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2017-11-26 20:16:09" itemprop="dateCreated datePublished" datetime="2017-11-26T20:16:09+08:00">2017-11-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2017-11-27 17:57:56" itemprop="dateModified" datetime="2017-11-27T17:57:56+08:00">2017-11-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>shell即命令解释器，根据输入的命令执行相应命令。shell的种类有很多，bash是许多Linux平台的内定shell。</p>
+<a id="more"></a>
+<h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><ol>
+<li><p>在bash下敲命令时，Tab键可以补全已经敲了一部分的文件名和目录名，也可以补全命令的某些参数、Makefile目标等等(如果补全内容有所相似，按Tab键后会显示出所有相似内容供选择)。在Ubuntu系统下，系统默认启用了bash completion，如果是Debian系统，可以用以下命令启用bash completion：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source /etc/bash_completion</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>shell有历史记录功能，按上下移动光标键(或者<code>Ctrl-p</code>、<code>Ctrl-n</code>)可以一条一条浏览以前输过的命令。通过按<code>Ctrl-r</code>，然后输入关键字，可以查找含有关键字的历史记录，随着每输入一个字母，bash会做增量式查找，也可以反复按<code>Ctrl-r</code>或<code>Ctrl-s</code>向前向后查找。</p>
+</li>
+<li><p>主键盘快捷键(尽量不要使用移动光标键和编辑键)<br>| 功能 | 快捷键 | 助记 |<br>|———–+———–+——————|<br>| 上 | Ctrl-p | previous |<br>| 下 | Ctrl-n | next |<br>| 左 | Ctrl-b | backward |<br>| 右 | Ctrl-f | forward |<br>| Del | Ctrl-d | delete光标后面的 |<br>| Home | Ctrl-a | the first letter |<br>| End | Ctrl-e | end |<br>| Backspace | Backspace | delete光标前面的 |</p>
+<h3 id="目录和文件"><a href="#目录和文件" class="headerlink" title="目录和文件"></a>目录和文件</h3></li>
+<li><p>类Unix系统没有盘符这个概念，只有一个根目录/，所有文件都在它下面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/ 根目录</span><br><span class="line">    bin //系统可执行程序，如命令</span><br><span class="line">    boot //内核和启动程序，所有和启动相关的文件都保存在这里</span><br><span class="line">        grub //引导器相关文件</span><br><span class="line">    dev //设备文件</span><br><span class="line">    etc //系统软件的启动和配置文件，系统在启动过程中需要读取的文件都在这个目录。如LILO参数、用户账户和密码。</span><br><span class="line">    home //用户的主目录。下面是自己定义的用户名的文件夹</span><br><span class="line">    lib //系统程序库文件,这个目录里存放着系统最基本的动态链接共享库，类似于Windows下的system32目录，几乎所有的应用程序都需要用到这些共享库。</span><br><span class="line">    media //挂载媒体设备，如光驱、U盘等</span><br><span class="line">    mnt //目录是让用户临时挂载别的文件系统，如挂载Windows下的某个分区，ubuntu默认还是挂载在/media目录。</span><br><span class="line">    opt //可选的应用软件包（很少使用）</span><br><span class="line">    proc //这个目录是系统内存的映射，我们可以直接访问这个目录来获取系统信息。也就是说，这个目录的内容不在硬盘上而是在内存里。</span><br><span class="line">    sbin //管理员系统程序</span><br><span class="line">    selinux</span><br><span class="line">    srv</span><br><span class="line">    sys //udev用到的设备目录树，/sys反映你机器当前所接的设备</span><br><span class="line">    tmp //临时文件夹</span><br><span class="line">    usr //这是个最庞大的目录，我们要用到的很多应用程序和文件几乎都存放在这个目录下。</span><br><span class="line">        bin // 应用程序</span><br><span class="line">        game //游戏程序</span><br><span class="line">        include</span><br><span class="line">        lib //应用程序的库文件</span><br><span class="line">        lib64</span><br><span class="line">        local //包含用户程序等</span><br><span class="line">        sbin //管理员应用程序</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用户目录位于/home/user，也被称之为家目录，表示方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/home/user</span><br><span class="line">~</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>每个目录下都有.和..，其中.表示当前目录，..表示上一级目录，即父目录</p>
+</li>
+<li><p>ls是英文单词list的简写，其功能是列出目录的内容。该命令类似于DOS下的dir命令。对于每个目录，该命令将列出其中的所有子目录与文件。对于每个文件，ls将输出其文件名以及所要求的其他信息。主要的参数有：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-a 列出隐藏文件，文件中以&quot;.&quot;开头的均为隐藏文件</span><br><span class="line">-l 列出文件的详细信息</span><br><span class="line">-R 连同子目录中的内容一起列出</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用ls -l命令显示的信息中，开头由10个字符构成的字符串，其中第一个字符表示文件类型，它可以是下述类型之一：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- 普通文件</span><br><span class="line">d 目录</span><br><span class="line">l 符号链接</span><br><span class="line">b 块设备文件</span><br><span class="line">c 字符设备文件</span><br><span class="line">s socket文件，网络套接字</span><br><span class="line">p 管道</span><br></pre></td></tr></table></figure>
+
+<p>后面的9个字符表示文件的访问权限，分为3组，每组3位。第一组表示文件属主的权限，第二组表示同组用户的权限，第三组表示其他用户的权限。每组的三个字符分别表示对文件的读、写、和执行权限。各权限如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">r 读</span><br><span class="line">w 写</span><br><span class="line">x 可执行。对于目录，表示进入权限</span><br><span class="line">- 没有相应位置的权限</span><br><span class="line">其余还有s和t</span><br></pre></td></tr></table></figure>
+
+<p>访问权限后面的数字表示与该文件共享inode的文件组数，即硬链接数</p>
+</li>
+<li><p>cd 改变当前所在路径(change dir)</p>
+</li>
+<li><p>which 查看指定命令所在路径</p>
+</li>
+<li><p>pwd 查看当前所在路径</p>
+</li>
+<li><p>mkdir 创建目录，后跟参数以及目录名，可以一次创建多个。参数如果是-p，表示可以连同父目录一起创建。</p>
+</li>
+<li><p>rmdir 删除空目录，后跟参数以及目录名，可以一次删除多个，注意只能删除空目录。参数如果是-p，表示可以连同空的父目录一起删除。</p>
+</li>
+<li><p>touch 如果文件不存在，则创建一个字节数为0的文件。否则将每个文件的访问及修改时间都更新为目前的时间。</p>
+</li>
+<li><p>rm 删除文件，如果是删除非空目录则使用<code>rm dir -rf</code></p>
+</li>
+<li><p>mv 在同文件夹下使用表示重命名，不同文件夹下使用表示移动文件</p>
+</li>
+<li><p>cp 拷贝文件；拷贝目录，可在其后追加参数-r</p>
+</li>
+<li><p>cat 将文件内容输出到终端，如果cat后没跟文件名，则读标准输入，遇到\n后，输出到标准输出，终端下输入<code>Ctrl-d</code>表示结束</p>
+</li>
+<li><p>more 查看文本文件的内容，屏幕显示完一屏就等待用户按下任意键再滚动到下一屏，按<code>Ctrl-C</code>可以终止显示</p>
+</li>
+<li><p>less 与more命令类似，只不过可以向上或向下查看</p>
+</li>
+<li><p>head 显示指定文件的前面几行，默认显示前10行，使用方式<code>head -5 a.txt</code></p>
+</li>
+<li><p>tail 显示指定文件的最后几行，与head使用方法类似</p>
+</li>
+<li><p>ln 链接有两种，一种被称为硬链接，另一种被称为符号链接。建立硬链接时，链接文件和被链接文件必须位于同一文件系统中，并且不能建立指向目录的硬链接。而对符号链接，则不存在这个问题。ln默认产生硬链接，加上-s则建立符号链接。</p>
+</li>
+<li><p>tree 按结构树的形状显示目录和文件，该命令需要下载安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install tree</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>du 查看目录的大小；df 查看磁盘使用情况</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/16/WCF核心技术-二/" rel="next" title="WCF核心技术(二)">
+                <i class="fa fa-chevron-left"></i> WCF核心技术(二)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/28/Linux基本命令-二/" rel="prev" title="Linux基本命令(二)">
+                Linux基本命令(二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本操作"><span class="nav-number">1.</span> <span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目录和文件"><span class="nav-number">2.</span> <span class="nav-text">目录和文件</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

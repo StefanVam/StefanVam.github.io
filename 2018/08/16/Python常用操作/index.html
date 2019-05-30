@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="文件操作 open函数用于打开文件，该函数返回一个文件对象。文件名为必填参数，打开文件的模式和缓冲参数都是可选的。语法如下：">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python常用操作">
+<meta property="og:url" content="http://yoursite.com/2018/08/16/Python常用操作/index.html">
+<meta property="og:site_name" content="缺根筋">
+<meta property="og:description" content="文件操作 open函数用于打开文件，该函数返回一个文件对象。文件名为必填参数，打开文件的模式和缓冲参数都是可选的。语法如下：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-12T06:00:44.228Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python常用操作">
+<meta name="twitter:description" content="文件操作 open函数用于打开文件，该函数返回一个文件对象。文件名为必填参数，打开文件的模式和缓冲参数都是可选的。语法如下：">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2018/08/16/Python常用操作/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Python常用操作 | 缺根筋</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">缺根筋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Schlagwörter</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Kategorien</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/404/" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>Commonweal 404</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/16/Python常用操作/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="缺根筋">
+      <meta itemprop="description" content="尽人事以听天命">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="缺根筋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python常用操作
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2018-08-16 16:00:38" itemprop="dateCreated datePublished" datetime="2018-08-16T16:00:38+08:00">2018-08-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2018-11-12 14:00:44" itemprop="dateModified" datetime="2018-11-12T14:00:44+08:00">2018-11-12</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h3><ol>
+<li><p>open函数用于打开文件，该函数返回一个文件对象。文件名为必填参数，打开文件的模式和缓冲参数都是可选的。语法如下：</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open(name[,mode[,buffering]])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果open函数只带一个文件名参数，那么可获得一个只读的文件对象，想要向文件内写入内容，则必须提供一个模式参数来显示声明。有以下几类模式：</p>
+<ul>
+<li>r   只能读，若文件不存在会报错，不能写</li>
+<li>r+  可读可写，若文件不存在会报错，写入内容会覆盖原内容</li>
+<li>w   只能写，若文件不存在会创建，写入内容会覆盖原内容</li>
+<li>w+  可读可写，若文件不存在会创建，写入内容会覆盖原内容</li>
+<li>a   只能写，若文件不存在会创建，写入内容会在原内容上追加</li>
+<li>a+  可读可写，若文件不存在会创建，写入内容会在原内容上追加</li>
+<li>b   将文件标示为二进制文件</li>
+</ul>
+</li>
+<li><p>文件对象的读写方法有以下几种：</p>
+<ul>
+<li>read 读取整个文件，通常将文件内容放到一个字符串变量中，可以传递size参数来限制读取字节长度</li>
+<li>readline 每次只读取一行，比readlines慢很多，不会处理换行符</li>
+<li>readlines 读取整个文件，类似于read函数，会自动将文件内容分析成一个行的列表，不会处理换行符</li>
+<li>write、writeline、writelines与上述方法功能类似，用于写入文件</li>
+</ul>
+</li>
+</ol>
+<h3 id="JSON操作"><a href="#JSON操作" class="headerlink" title="JSON操作"></a>JSON操作</h3><p>在python中，有专门处理json格式的模块，json和picle模块(不常用)，其中都有四个方法：<br>    -   loads 反序列化为Python对象<br>    -   load  只接收文件描述符，完成了读取文件和反序列化<br>    -   dumps 序列化为Python字符串<br>    -   dump  只接收文件描述符，完成了序列化和写入文件</p>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><ol>
+<li>在python中，与正则表达式相关的模块是re模块，其中常用的方法有：<ul>
+<li>match 尝试从字符串的起始位置匹配一个模式，如果不是起始位置匹配成功的话，match就返回None</li>
+<li>search 扫描整个字符串并返回第一个成功的匹配</li>
+<li>sub 用于替换字符串中的匹配项，其中目标字符串参数可以是一个函数</li>
+<li>compile 函数用于编译正则表达式，生成一个正则表达式对象，供match和search这两个函数使用</li>
+<li>findall 在字符串中找到正则表达式所匹配的所有子串，并返回一个列表，如果没有找到匹配的，则返回空列表。</li>
+<li>finditer 和findall类似，在字符串中找到正则表达式所匹配的所有字符串，并把它们作为一个迭代器返回。</li>
+<li>split 方法按照能够匹配的子串将字符串分隔后返回列表</li>
+</ul>
+</li>
+<li>如果匹配成功，match或search方法会返回一个匹配的对象，可以使用group(num)或groups匹配对象函数来获取匹配表达式。</li>
+</ol>
+<h3 id="Excel操作"><a href="#Excel操作" class="headerlink" title="Excel操作"></a>Excel操作</h3><ol>
+<li>python操作excel主要用到xlrd(读)和xlwt(写)两个模块，这两个模块需要先进行安装</li>
+<li>常用的单元格中的数据类型：0 empty；1 string(text);2 number；3 date；4 boolean；5 error；6 blank。</li>
+<li>xlrd模块下常用的函数如下：<ul>
+<li>open_workbook 用于打开一个Excel文件，参数为文件名及其路径，返回一个book对象</li>
+<li>book对象 sheets方法获取Excel中的所有sheet页；sheet_by_index方法通过索引来获取指定的sheet页；sheet_by_name方法通过名称来获取指定的sheet页</li>
+<li>sheet对象 nrows属性获取sheet页中的有效行数；row方法通过索引来获取指定的行；row_slice方法通过索引以及指定列索引，来获取指定行的部分列数据；row_types与row_slice方法参数类似，用于获取指定行的部分列数据的类型；row_values与row_slice方法参数类似，用于获取指定行的部分列数据的值；row_len通过索引获取指定行的有效列数。</li>
+<li>针对列的操作与上述针对行的操作类似，只不过方法名有所不同，当然也可以直接操作单元格，针对单元格的操作也是如此。</li>
+</ul>
+</li>
+<li>xlwt模块下常用的函数如下：<ul>
+<li>Workbook 用于创建一个Excel文件，返回一个book对象</li>
+<li>book对象 add_sheet方法创建一个sheet页，如果会对一个单元格重复操作 ，需要为该方法添加一个cell_overwrite_ok参数；save方法保存文件，参数为文件名及其路径。</li>
+<li>sheet对象 write写入某个单元格数据，通过传入style参数，可以指定单元格的样式</li>
+</ul>
+</li>
+<li>如果要操作Excel 2007及以上版本，可以使用openpyxl模块(需要先进行安装)</li>
+</ol>
+<h3 id="SQLServer操作"><a href="#SQLServer操作" class="headerlink" title="SQLServer操作"></a>SQLServer操作</h3><ol>
+<li>python操作SQLServer需要使用pymssql模块，该模块需要先进行安装</li>
+<li>使用pymssql模块的connect方法可以创建一个连接对象，需要提供的主要参数有主机名、用户名、用户密码、数据库名称，字符集、应用程序名称等</li>
+<li>调用连接对象的cursor方法可以创建一个数据库指针，用来处理查询并从数据库中获取数据；连接对象的close方法用于查询结束后关闭连接，可用于回滚未提交的事务；连接对象的commit方法用于提交当前程序中的事务</li>
+<li>调用数据库指针对象的execute可以执行一个sql语句，接着调用对象的fetchall方法可以获取sql执行后的结果</li>
+<li>如果从数据库获取的数据乱码的话可以使用<code>encode(&#39;latin-1&#39;).decode(&#39;gbk&#39;)</code>来将其进行转码</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/15/用Python写爬虫-二/" rel="next" title="用Python写爬虫(二)">
+                <i class="fa fa-chevron-left"></i> 用Python写爬虫(二)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/03/SQL执行计划三/" rel="prev" title="SQL执行计划三">
+                SQL执行计划三 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">缺根筋</p>
+              <div class="site-description motion-element" itemprop="description">尽人事以听天命</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">100</span>
+                    <span class="site-state-item-name">Artikel</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-name">schlagwörter</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件操作"><span class="nav-number">1.</span> <span class="nav-text">文件操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON操作"><span class="nav-number">2.</span> <span class="nav-text">JSON操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式"><span class="nav-number">3.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Excel操作"><span class="nav-number">4.</span> <span class="nav-text">Excel操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLServer操作"><span class="nav-number">5.</span> <span class="nav-text">SQLServer操作</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">缺根筋</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
